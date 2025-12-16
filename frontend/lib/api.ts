@@ -90,6 +90,29 @@ class ApiClient {
     if (typeof window === "undefined") return null;
     return localStorage.getItem("auth_token");
   }
+
+  // Auth methods
+  async login(data: { email: string; password: string }) {
+    return this.post("/auth/login", data);
+  }
+
+  async register(data: { email: string; password: string; full_name: string }) {
+    return this.post("/auth/register", data);
+  }
+
+  // Doctor methods
+  async getDoctors() {
+    return this.get("/doctors");
+  }
+
+  // Appointment methods
+  async getMyAppointments() {
+    return this.get("/appointments/my");
+  }
+
+  async createAppointment(data: { doctor_id: number; start_time: string }) {
+    return this.post("/appointments", data);
+  }
 }
 
 export const api = new ApiClient(API_BASE_URL);
@@ -126,27 +149,6 @@ export function getUserData(): any {
   const data = localStorage.getItem("user_data");
   return data ? JSON.parse(data) : null;
 }
-
-// Auth API methods
-api.register = async function(data: { email: string; password: string; full_name: string }) {
-  return api.post("/auth/register", data);
-};
-
-api.login = async function(data: { email: string; password: string }) {
-  return api.post("/auth/login", data);
-};
-
-api.getDoctors = async function() {
-  return api.get("/doctors");
-};
-
-api.getMyAppointments = async function() {
-  return api.get("/appointments/my");
-};
-
-api.createAppointment = async function(data: { doctor_id: number; start_time: string }) {
-  return api.post("/appointments", data);
-};
 
 // Type definitions
 export interface User {

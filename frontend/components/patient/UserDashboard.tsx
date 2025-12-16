@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-import AppointmentsList from "./AppointmentsList";
+import UserCalendarPlaceholder, { Slot } from "./UserCalendarPlaceholder";
 import { SidebarItemConfig } from "../shared/Sidebar";
 import { AppointmentItem } from "./AppointmentCard";
 
@@ -83,35 +83,13 @@ const UserDashboard: React.FC = () => {
     []
   );
 
-  const appointments: AppointmentItem[] = useMemo(
-    () => [
-      {
-        id: "appt-1",
-        doctor: "Dr. Smith",
-        datetime: "Jan 12, 10:30 AM",
-        location: "Room B · Floor 2",
-        status: "upcoming",
-        note: "Arrive 10 minutes early",
-      },
-      {
-        id: "appt-2",
-        doctor: "Dr. Patel",
-        datetime: "Feb 02, 2:00 PM",
-        location: "Room C · Floor 2",
-        status: "upcoming",
-        note: "Bring recent lab results",
-      },
-      {
-        id: "appt-3",
-        doctor: "Dr. Alvarez",
-        datetime: "Dec 01, 3:30 PM",
-        location: "Room A · Floor 1",
-        status: "completed",
-        note: "Follow-up scheduled",
-      },
-    ],
-    []
-  );
+  const doctors = ["Dr. Smith", "Dr. Patel", "Dr. Alvarez"];
+  const slots: Slot[] = [
+    { time: "09:00", label: "Open", state: "available" },
+    { time: "10:00", label: "Booked", state: "booked" },
+    { time: "11:00", label: "Open", state: "available" },
+    { time: "12:00", label: "-", state: "empty" },
+  ];
 
   return (
     <DashboardLayout

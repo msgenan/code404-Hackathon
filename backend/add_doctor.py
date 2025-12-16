@@ -8,7 +8,7 @@ import sys
 from getpass import getpass
 from sqlmodel import Session, select
 from app.database import engine
-from app.schemas.base import User, UserRole
+from app.models import User, UserRole
 from app.auth import hash_password
 
 

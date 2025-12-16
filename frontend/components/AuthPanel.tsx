@@ -65,3 +65,4 @@ export default function AuthPanel({ open, mode, onClose, onSwitchMode }: AuthPan
     </aside>
   );
 }
+

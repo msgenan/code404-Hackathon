@@ -2,7 +2,7 @@
 
 import React from "react";
 
-interface Slot {
+export interface Slot {
   time: string;
   label: string;
   state?: "available" | "booked" | "empty";

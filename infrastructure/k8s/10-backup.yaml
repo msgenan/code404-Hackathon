@@ -23,7 +23,7 @@ metadata:
   labels:
     app: backup
 spec:
-  schedule: "0 * * * *"  # Run every hour at minute 0
+  schedule: "0 2 * * *"  # Run daily at 2 AM
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 1
   jobTemplate:
@@ -95,10 +95,10 @@ spec:
                   echo "Backup Location: $BACKUP_DIR"
                   echo "==================================="
                   
-                  # Cleanup old backups (keep last 7 days)
+                  # Cleanup old backups (keep last 30 days)
                   echo ""
-                  echo "🧹 Cleaning up old backups (older than 7 days)..."
-                  find /backup -type d -mtime +7 -exec rm -rf {} + 2>/dev/null || true
+                  echo "🧹 Cleaning up old backups (older than 30 days)..."
+                  find /backup -type d -mtime +30 -exec rm -rf {} + 2>/dev/null || true
                   echo "✅ Cleanup completed"
               env:
                 - name: POSTGRES_USER
