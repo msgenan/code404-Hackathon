@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { api, saveToken } from "@/lib/api";
 
 export interface LoginFormProps {
   onSwitchToRegister?: () => void;
@@ -57,6 +59,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
           </button>
         </div>
       </div>
+
+      {error && (
+        <div className="bg-rose-50 text-rose-600 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
 
       <div>
         <button
