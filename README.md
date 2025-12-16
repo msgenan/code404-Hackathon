@@ -1,144 +1,165 @@
 # Smart Appointment System - Code404
 
-Hackathon project for Case 3: Smart Appointment and Queue Management.
+Akıllı randevu ve kuyruk yönetim sistemi. Docker containerları ile microservice mimarisinde geliştirilmiş, Nginx reverse proxy ile güvenli erişim sağlanan modern bir web uygulaması.
 
-## 🚀 Quick Start
+## 🏗️ Sistem Mimarisi
 
-### Prerequisites
-- Docker Desktop installed and running
+```
+Client → Nginx (Port 80) → Backend API (FastAPI) → PostgreSQL
+                         ↘ Frontend (Next.js)    → Redis (Cache)
+```
+
+**Teknolojiler:**
+- **Frontend:** Next.js 15 (React 19) - Modern UI framework
+- **Backend:** FastAPI (Python 3.12) - High-performance API
+- **Database:** PostgreSQL 16 - İlişkisel veritabanı
+- **Cache:** Redis 7 - Önbellekleme ve oturum yönetimi
+- **Proxy:** Nginx - Reverse proxy ve load balancing
+- **Infrastructure:** Docker Compose + Kubernetes
+
+## 🚀 Hızlı Başlangıç
+
+### Gereksinimler
+- Docker Desktop (çalışır durumda)
 - Git
 
-### Setup (Automated)
+### Kurulum
 
-**For macOS/Linux:**
 ```bash
-# Clone the repository
-git clone https://github.com/msgenan/Pre-VadiHackathon.git
-cd Pre-VadiHackathon
+# 1. Projeyi klonlayın
+git clone https://github.com/msgenan/code404-Hackathon.git
+cd code404-Hackathon
 
-# Run the setup script
-./setup.sh
-```
-
-**For Windows:**
-```cmd
-# Clone the repository
-git clone https://github.com/msgenan/Pre-VadiHackathon.git
-cd Pre-VadiHackathon
-
-# Run the setup script
-setup.bat
-```
-
-The setup script will:
-- Check if Docker is running
-- Create `.env` file from template
-- Build and start all containers (with BuildKit fallback)
-- Verify services are running
-
-### Setup (Manual)
-
-**For macOS/Linux:**
-```bash
-# 1. Create environment file
+# 2. Ortam değişkenlerini ayarlayın
 cp .env.example .env
 
-# 2. Build and start containers
-docker-compose up --build -d
-
-# If you encounter BuildKit DNS issues:
-DOCKER_BUILDKIT=0 docker-compose up --build -d
-```
-
-**For Windows:**
-```cmd
-# 1. Create environment file
-copy .env.example .env
-
-# 2. Build and start containers
-docker-compose up --build -d
-
-# If you encounter BuildKit DNS issues:
-set DOCKER_BUILDKIT=0
-docker-compose up --build -d
-```
-
-### Access the Application
-
-**Production-like (via Nginx):**
-- Frontend: http://localhost
-- Backend API: http://localhost/api/health
-- Backend Docs: http://localhost/docs
-
-**Debug (Direct Access):**
-- Frontend: http://localhost:3001
-- Backend: http://localhost:8001
-
-## 📦 Architecture
-
-- **Frontend:** Next.js 16 (React 19)
-- **Backend:** FastAPI (Python 3.12)
-- **Database:** PostgreSQL 16
-- **Cache:** Redis 7
-- **Proxy:** Nginx (reverse proxy)
-
-## 🛠️ Development
-
-```bash
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-
-# Restart services
-docker-compose restart
-
-# Rebuild specific service
-docker-compose up --build backend
-```
-
-## 📚 Documentation
-
-- [Kubernetes Deployment](./infrastructure/k8s/README.md)
-- [Nginx Configuration](./nginx/README.md)
-- [Production Deployment](./PRODUCTION.md)
-
-## 🧪 Testing
-
-```bash
-# Backend tests
-docker-compose exec backend pytest
-
-# Frontend tests
-docker-compose exec frontend npm test
-```
-
-## ⚠️ Common Issues
-
-### BuildKit DNS Error
-If you see `failed to resolve source metadata`:
-
-**macOS/Linux:**
-```bash
-DOCKER_BUILDKIT=0 docker-compose up --build
-```
-
-**Windows:**
-```cmd
-set DOCKER_BUILDKIT=0
+# 3. Tüm servisleri başlatın
 docker-compose up --build
 ```
 
-### Port Already in Use
-```bash
-# Find process using port 80
-sudo lsof -i :80
+### Uygulamaya Erişim
 
-# Or change ports in docker-compose.yml
+Tüm servisler Nginx reverse proxy üzerinden erişilebilir:
+
+- **Frontend:** http://localhost
+- **Backend API:** http://localhost/api/health
+- **API Docs:** http://localhost/docs
+
+> **Güvenlik:** Servisler sadece Nginx üzerinden expose edilmiştir. Direkt port erişimi kapalıdır.
+
+## 👥 Kullanıcı Yönetimi
+
+### Varsayılan Kullanıcılar
+
+Sistem ilk başlatıldığında otomatik olarak oluşturulur:
+
+**Doktor:**
+- Email: `doktor@hospital.com`
+- Şifre: `doktor123`
+
+**Hasta:**
+- Email: `hasta@hospital.com`
+- Şifre: `hasta123`
+
+### Yeni Doktor Ekleme
+
+```bash
+docker-compose exec backend python add_doctor.py
 ```
 
-### .env File Missing
+### Yeni Hasta Kaydı
+
+Hastalar web arayüzünden kayıt olabilir:
+1. http://localhost adresine gidin
+2. "Register" sekmesine tıklayın
+3. Formu doldurun ve "Create account" butonuna tıklayın
+
+## 🛠️ Geliştirme
+
+```bash
+# Logları görüntüle
+docker-compose logs -f
+
+# Tüm servisleri durdur
+docker-compose down
+
+# Servisleri yeniden başlat
+docker-compose restart
+
+# Tek bir servisi rebuild et
+docker-compose up --build backend
+```
+
+## 🧪 Test
+
+```bash
+# Backend testleri
+docker-compose exec backend pytest
+
+# Frontend testleri
+docker-compose exec frontend npm test
+```
+
+## 📦 Veritabanı Yedekleme
+
+```bash
+# Manuel yedekleme
+./scripts/backup_db.sh
+
+# Yedekler backups/ klasörüne kaydedilir
+```
+
+## ☸️ Kubernetes Deployment
+
+Kubernetes ortamına deploy etmek için:
+
+```bash
+# Namespace oluştur
+kubectl apply -f infrastructure/k8s/00-namespace.yaml
+
+# Secret'ları yapılandır
+kubectl create secret generic app-secrets \
+  --from-literal=POSTGRES_USER=your_user \
+  --from-literal=POSTGRES_PASSWORD=your_password \
+  -n appointment-system
+
+# Tüm kaynakları deploy et
+kubectl apply -f infrastructure/k8s/
+```
+
+Detaylı bilgi için: [Kubernetes Deployment Guide](./infrastructure/k8s/README.md)
+
+## 🔧 Sorun Giderme
+
+### Port Kullanımda Hatası
+
+```bash
+# Port 80'i kullanan işlemi bul
+sudo lsof -i :80
+
+# Docker servisleri durdur
+docker-compose down
+```
+
+### BuildKit DNS Hatası
+
+```bash
+# BuildKit'i devre dışı bırak
+DOCKER_BUILDKIT=0 docker-compose up --build
+```
+
+### .env Dosyası Eksik
+
 ```bash
 cp .env.example .env
 ```
+
+## 📝 Notlar
+
+- Production ortamında `.env` dosyasındaki `SECRET_KEY` mutlaka değiştirilmelidir
+- PostgreSQL ve Redis şifreleri güçlü şifreler ile değiştirilmelidir
+- Nginx üzerinden erişim zorunludur, direkt servis erişimi güvenlik nedeniyle kapatılmıştır
+
+## 📄 Lisans
+
+Bu proje hackathon için geliştirilmiştir.

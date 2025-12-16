@@ -34,10 +34,8 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: appointment_backend
-    ports:
-      - "8000:8000"  # Direct backend access
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -55,10 +53,8 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: appointment_frontend
-    ports:
-      - "3000:3000"  # Direct frontend access
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       WATCHPACK_POLLING: "true"
