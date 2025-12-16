@@ -4,8 +4,10 @@ const API_BASE_URL =
     ? "/api" // Browser: Nginx reverse proxy üzerinden
     : process.env.NEXT_PUBLIC_API_URL || "http://backend:8000"; // Server-side: Docker network
 
-interface RequestOptions extends RequestInit {
-  body?: Record<string, unknown> | string;
+// Custom interface with jsonBody for type-safe JSON payloads
+interface RequestOptions extends Omit<RequestInit, 'body'> {
+  jsonBody?: Record<string, unknown>;
+  body?: BodyInit | null;
 }
 
 class ApiClient {
@@ -41,8 +43,11 @@ class ApiClient {
       },
     };
 
-    if (options.body && typeof options.body === "object") {
-      config.body = JSON.stringify(options.body);
+    // Handle JSON body serialization
+    if (options.jsonBody) {
+      config.body = JSON.stringify(options.jsonBody);
+    } else if (options.body) {
+      config.body = options.body;
     }
 
     try {
@@ -78,12 +83,12 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "GET" });
   }
 
-  async post<T>(endpoint: string, body?: Record<string, unknown>): Promise<T> {
-    return this.request<T>(endpoint, { method: "POST", body });
+  async post<T>(endpoint: string, jsonBody?: Record<string, unknown>): Promise<T> {
+    return this.request<T>(endpoint, { method: "POST", jsonBody });
   }
 
-  async put<T>(endpoint: string, body?: Record<string, unknown>): Promise<T> {
-    return this.request<T>(endpoint, { method: "PUT", body });
+  async put<T>(endpoint: string, jsonBody?: Record<string, unknown>): Promise<T> {
+    return this.request<T>(endpoint, { method: "PUT", jsonBody });
   }
 
   async delete<T>(endpoint: string): Promise<T> {
