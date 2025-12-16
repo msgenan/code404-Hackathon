@@ -54,12 +54,24 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # Pydantic validation hatalarını kullanıcı dostu mesaja çevir
+    errors = exc.errors()
+    error_messages = []
+    
+    for error in errors:
+        field = error.get("loc", [])[-1] if error.get("loc") else "unknown"
+        msg = error.get("msg", "")
+        
+        # "Value error, " prefix'ini kaldır
+        if msg.startswith("Value error, "):
+            msg = msg.replace("Value error, ", "")
+        
+        error_messages.append(f"{field}: {msg}")
+    
     return JSONResponse(
         status_code=422,
         content={
-            "error": "Validation Error",
-            "details": exc.errors(),
-            "body": exc.body,
+            "detail": " | ".join(error_messages) if error_messages else "Validation error"
         },
     )
 
