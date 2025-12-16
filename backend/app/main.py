@@ -6,6 +6,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlmodel import Session, select
 from datetime import datetime, timedelta
 from typing import List
+import redis
 
 from app.database import create_db_and_tables, get_session
 from app.models import (
@@ -31,6 +32,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize Prometheus metrics
+Instrumentator().instrument(app).expose(app)
+
+# Initialize Redis Connection
+redis_client = redis.Redis(host='appointment_redis', port=6379, db=0, decode_responses=True)
 
 # JSON formatında hata döndür (HTML değil)
 @app.exception_handler(StarletteHTTPException)
@@ -187,6 +193,15 @@ async def create_appointment(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Sadece hastalar randevu alabilir"
         )
+    
+    # Create a unique lock key based on doctor and time
+    lock_key = f"lock:appointment:{appointment_data.doctor_id}:{appointment_data.start_time}"
+    
+    # Try to acquire the lock for 10 seconds (nx=True means set only if not exists)
+    is_locked = redis_client.set(lock_key, "locked", ex=10, nx=True)
+    
+    if not is_locked:
+        raise HTTPException(status_code=409, detail="This time slot is currently being processed by another user. Please try again.")
     
     # Doktor kontrolü
     doctor = session.get(User, appointment_data.doctor_id)
