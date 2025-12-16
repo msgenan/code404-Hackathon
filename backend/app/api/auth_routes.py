@@ -12,7 +12,9 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 async def register(user_data: UserCreate, session: Session = Depends(get_session)):
     """User registration endpoint."""
     try:
-        existing_user = session.exec(select(User).where(User.email == user_data.email)).first()
+        existing_user = session.exec(
+            select(User).where(User.email == user_data.email)
+        ).first()
         if existing_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -58,4 +60,3 @@ async def login(login_data: UserLogin, session: Session = Depends(get_session)):
     access_token = create_access_token(data={"sub": user.id})
 
     return Token(access_token=access_token)
-

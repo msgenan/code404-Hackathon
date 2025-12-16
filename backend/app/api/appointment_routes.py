@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import List
 
 import redis
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -18,7 +17,9 @@ from app.models import (
 
 router = APIRouter(prefix="/appointments", tags=["appointments"])
 
-redis_client = redis.Redis(host="appointment_redis", port=6379, db=0, decode_responses=True)
+redis_client = redis.Redis(
+    host="appointment_redis", port=6379, db=0, decode_responses=True
+)
 
 
 @router.post("", response_model=AppointmentRead, status_code=status.HTTP_201_CREATED)
@@ -37,7 +38,9 @@ async def create_appointment(
             detail="Only patients can create appointments",
         )
 
-    lock_key = f"lock:appointment:{appointment_data.doctor_id}:{appointment_data.start_time}"
+    lock_key = (
+        f"lock:appointment:{appointment_data.doctor_id}:{appointment_data.start_time}"
+    )
     is_locked = redis_client.set(lock_key, "locked", ex=10, nx=True)
     if not is_locked:
         raise HTTPException(
@@ -80,7 +83,7 @@ async def create_appointment(
     return new_appointment
 
 
-@router.get("/my", response_model=List[AppointmentRead])
+@router.get("/my", response_model=list[AppointmentRead])
 async def get_my_appointments(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
@@ -94,4 +97,3 @@ async def get_my_appointments(
     return session.exec(
         select(Appointment).where(Appointment.patient_id == current_user.id)
     ).all()
-

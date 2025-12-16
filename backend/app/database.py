@@ -1,6 +1,7 @@
 import os
-from sqlmodel import SQLModel, create_engine, Session
-from typing import Generator
+from collections.abc import Generator
+
+from sqlmodel import Session, SQLModel, create_engine
 
 DB_USER = os.getenv("POSTGRES_USER", "postgres")
 DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
@@ -11,6 +12,7 @@ DB_NAME = os.getenv("POSTGRES_DB", "hospital_db")
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 engine = create_engine(DATABASE_URL, echo=True)
+
 
 def create_db_and_tables():
     """Create database tables"""

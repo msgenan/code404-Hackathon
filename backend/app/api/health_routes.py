@@ -7,4 +7,3 @@ router = APIRouter(tags=["health"])
 async def health_check():
     """Health check endpoint."""
     return {"status": "ok", "message": "Hastane Randevu Sistemi çalışıyor"}
-

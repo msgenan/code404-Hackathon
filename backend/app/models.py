@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 
 from pydantic import EmailStr, validator
 from sqlmodel import Field, Relationship, SQLModel
@@ -24,17 +23,17 @@ class User(SQLModel, table=True):
 
     __tablename__ = "users"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     email: str = Field(unique=True, index=True)
     password_hash: str
     role: UserRole = Field(default=UserRole.patient)
     full_name: str
 
-    appointments_as_doctor: List["Appointment"] = Relationship(
+    appointments_as_doctor: list["Appointment"] = Relationship(
         back_populates="doctor",
         sa_relationship_kwargs={"foreign_keys": "Appointment.doctor_id"},
     )
-    appointments_as_patient: List["Appointment"] = Relationship(
+    appointments_as_patient: list["Appointment"] = Relationship(
         back_populates="patient",
         sa_relationship_kwargs={"foreign_keys": "Appointment.patient_id"},
     )
@@ -45,17 +44,17 @@ class Appointment(SQLModel, table=True):
 
     __tablename__ = "appointments"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     doctor_id: int = Field(foreign_key="users.id")
     patient_id: int = Field(foreign_key="users.id")
     start_time: datetime
     status: AppointmentStatus = Field(default=AppointmentStatus.active)
 
-    doctor: Optional[User] = Relationship(
+    doctor: User | None = Relationship(
         back_populates="appointments_as_doctor",
         sa_relationship_kwargs={"foreign_keys": "[Appointment.doctor_id]"},
     )
-    patient: Optional[User] = Relationship(
+    patient: User | None = Relationship(
         back_populates="appointments_as_patient",
         sa_relationship_kwargs={"foreign_keys": "[Appointment.patient_id]"},
     )
@@ -86,7 +85,7 @@ class UserCreate(UserBase):
         if not any(char.isdigit() for char in v):
             raise ValueError("Şifre en az 1 rakam içermelidir")
 
-        special_chars = "!@#$%^&*(),.?\":{}|<>"
+        special_chars = '!@#$%^&*(),.?":{}|<>'
         if not any(char in special_chars for char in v):
             raise ValueError("Şifre en az 1 özel karakter içermelidir (!@#$%^&* vb.)")
 
@@ -150,8 +149,8 @@ class AppointmentRead(SQLModel):
     patient_id: int
     start_time: datetime
     status: AppointmentStatus
-    doctor: Optional[UserRead] = None
-    patient: Optional[UserRead] = None
+    doctor: UserRead | None = None
+    patient: UserRead | None = None
 
 
 class Token(SQLModel):
@@ -159,4 +158,3 @@ class Token(SQLModel):
 
     access_token: str
     token_type: str = "bearer"
-

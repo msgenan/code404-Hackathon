@@ -1,11 +1,12 @@
 import os
 from datetime import datetime, timedelta
-from typing import Optional
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlmodel import Session, select
+
 from app.database import get_session
 from app.models import User
 
@@ -26,7 +27,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     """Create JWT access token"""
     to_encode = data.copy()
     if expires_delta:
@@ -53,12 +54,12 @@ def decode_token(token: str) -> dict:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
 ) -> User:
     """Get current user from token (Dependency)"""
     token = credentials.credentials
     payload = decode_token(token)
-    
+
     user_id: int = payload.get("sub")
     if user_id is None:
         raise HTTPException(
@@ -66,7 +67,7 @@ async def get_current_user(
             detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     user = session.get(User, user_id)
     if user is None:
         raise HTTPException(
@@ -76,14 +77,15 @@ async def get_current_user(
         )
     return user
 
-def authenticate_user(email: str, password: str, session: Session) -> Optional[User]:
+
+def authenticate_user(email: str, password: str, session: Session) -> User | None:
     """Authenticate user"""
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
-    
+
     if not user:
         return None
     if not verify_password(password, user.password_hash):
         return None
-    
+
     return user
