@@ -1,4 +1,8 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// API_BASE_URL: Browser'dan /api kullan (Nginx proxy), server-side'da Docker network kullan
+const API_BASE_URL = 
+  typeof window !== "undefined"
+    ? "/api" // Browser: Nginx reverse proxy üzerinden
+    : process.env.NEXT_PUBLIC_API_URL || "http://backend:8000"; // Server-side: Docker network
 
 interface RequestOptions extends RequestInit {
   body?: any;
