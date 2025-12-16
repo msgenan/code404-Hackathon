@@ -1,8 +1,5 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import RoleSelector, { Role } from "./RoleSelector";
-import { api, saveToken } from "@/lib/api";
 
 export interface RegisterFormProps {
   onSwitchToLogin?: () => void;
@@ -14,10 +11,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
-  const router = useRouter();
+  const [loading] = useState<boolean>(false);
+  const [error] = useState<string>("");
+  const [success] = useState<string>("");
 
   const passwordsMatch = useMemo(
     () => password.length > 0 && password === confirmPassword,
@@ -25,33 +21,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   );
   const disabled = !fullName || !email || !password || !confirmPassword || !passwordsMatch || loading;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    try {
-      await api.register({
-        email,
-        password,
-        full_name: fullName,
-      });
-      
-      setSuccess("Kayıt başarılı! Giriş yapılıyor...");
-      
-      // Otomatik giriş yap
-      const loginResponse = await api.login({ email, password });
-      saveToken(loginResponse.access_token);
-      
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Kayıt başarısız");
-    } finally {
-      setLoading(false);
-    }
+    console.log("Register", { fullName, email });
   };
 
   return (
@@ -65,7 +37,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition"
+          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition text-slate-900 font-medium"
           placeholder="Jane Doe"
           required
         />
@@ -80,7 +52,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition"
+          className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition text-slate-900 font-medium"
           placeholder="you@clinic.com"
           required
         />
@@ -96,7 +68,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition pr-10"
+            className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 transition pr-10 text-slate-900 font-medium"
             placeholder="••••••••"
             required
             minLength={6}
@@ -127,7 +99,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
               : passwordsMatch
               ? "border-emerald-300"
               : "border-rose-300"
-          } focus:outline-none focus:ring-2 focus:ring-emerald-200 transition`}
+          } focus:outline-none focus:ring-2 focus:ring-emerald-200 transition text-slate-900 font-medium`}
           placeholder="••••••••"
           required
         />
@@ -135,18 +107,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           <p className="text-rose-600 text-sm mt-1">Passwords do not match</p>
         )}
       </div>
-
-      {error && (
-        <div className="bg-rose-50 text-rose-600 p-3 rounded-lg text-sm">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-emerald-50 text-emerald-600 p-3 rounded-lg text-sm">
-          {success}
-        </div>
-      )}
 
       <div>
         <button

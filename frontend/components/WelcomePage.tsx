@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 import FeatureItem from "@/components/FeatureItem";
 import PrimaryButton from "@/components/PrimaryButton";
+import AuthCard from "@/components/auth/AuthCard";
 
 const features = [
   {
@@ -67,22 +67,21 @@ const features = [
   },
 ];
 
+type Mode = "initial" | "login" | "register";
+
 export default function WelcomePage() {
-  const router = useRouter();
+  const [mode, setMode] = useState<Mode>("initial");
 
-  const handleLogin = useCallback(() => {
-    router.push("/auth?mode=login");
-  }, [router]);
-
-  const handleRegister = useCallback(() => {
-    router.push("/auth?mode=register");
-  }, [router]);
+  const handleLogin = useCallback(() => setMode("login"), []);
+  const handleRegister = useCallback(() => setMode("register"), []);
+  const handleBack = useCallback(() => setMode("initial"), []);
+  const isExpanded = useMemo(() => mode !== "initial", [mode]);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-sky-50 via-white to-emerald-50">
+    <div className="relative min-h-screen bg-gradient-to-br from-sky-100 via-slate-50 to-emerald-100">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-sky-100 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-emerald-100 blur-3xl" />
+        <div className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-sky-200 blur-3xl" />
+        <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-emerald-200 blur-3xl" />
       </div>
 
       <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-12 lg:px-12">
@@ -109,8 +108,8 @@ export default function WelcomePage() {
           </div>
         </div>
 
-        <div className="grid flex-1 gap-12 lg:grid-cols-2 lg:items-center">
-          <div className="space-y-8">
+        <div className="grid flex-1 gap-12 lg:grid-cols-2 lg:items-start">
+          <div className="space-y-8 pt-1">
             <div className="space-y-4">
               <p className="inline-flex items-center rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700 ring-1 ring-sky-100 shadow-sm">
                 Next-Gen Clinic Experience
@@ -136,27 +135,13 @@ export default function WelcomePage() {
           </div>
 
           <div className="flex justify-center lg:justify-end">
-            <div className="w-full max-w-md rounded-3xl bg-white/90 p-8 shadow-2xl shadow-sky-100 ring-1 ring-slate-100 backdrop-blur-sm">
-              <div className="space-y-2 text-center">
-                <h2 className="text-2xl font-bold text-slate-900">Welcome</h2>
-                <p className="text-sm text-slate-600">For doctors and patients</p>
-              </div>
-
-              <div className="mt-8 space-y-4">
-                <PrimaryButton label="Login" onClick={handleLogin} fullWidth />
-                <PrimaryButton
-                  label="Register"
-                  onClick={handleRegister}
-                  variant="secondary"
-                  fullWidth
-                />
-              </div>
-
-              <div className="mt-6 space-y-2 text-center text-sm text-slate-500">
-                <p>New here? Register and get started in minutes.</p>
-                <p>Support is available around the clock.</p>
-              </div>
-            </div>
+            <AuthCard
+              mode={mode}
+              onLogin={handleLogin}
+              onRegister={handleRegister}
+              onBack={handleBack}
+              isExpanded={isExpanded}
+            />
           </div>
         </div>
       </div>
