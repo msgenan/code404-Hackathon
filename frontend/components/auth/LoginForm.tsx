@@ -13,9 +13,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const disabled = !email || !password;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login", { email });
+    try {
+      const res = await api.login({ email, password });
+      const token = (res as any)?.access_token || (res as any)?.token;
+      if (token) {
+        saveToken(token);
+      }
+      // Optional: save user info if returned
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
+    } catch (err) {
+      console.error("Login failed", err);
+      alert(err instanceof Error ? err.message : "Login failed");
+    }
   };
 
   return (
