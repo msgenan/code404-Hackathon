@@ -1,7 +1,7 @@
 fastapi
 uvicorn[standard]
 sqlalchemy
-asyncpg
+psycopg2-binary  # <-- This is the FIX for synchronous SQLAlchemy
 pydantic-settings
 redis
 
@@ -9,3 +9,6 @@ redis
 pytest
 pytest-asyncio
 httpx
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
