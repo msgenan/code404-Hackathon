@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { api, saveToken } from "@/lib/api";
 
 export interface LoginFormProps {
@@ -21,8 +20,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       if (token) {
         saveToken(token);
       }
-      // Optional: save user info if returned
-      // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (err) {
       console.error("Login failed", err);
@@ -102,3 +99,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
 };
 
 export default LoginForm;
+

@@ -1,11 +1,12 @@
-from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, List
 from datetime import datetime
 from enum import Enum
+from typing import List, Optional
+
 from pydantic import EmailStr, validator
+from sqlmodel import Field, Relationship, SQLModel
 
 
-# Enum tanımlamaları
+# Enum definitions
 class UserRole(str, Enum):
     admin = "admin"
     doctor = "doctor"
@@ -17,130 +18,133 @@ class AppointmentStatus(str, Enum):
     cancelled = "cancelled"
 
 
-# Database Models
+# Database models
 class User(SQLModel, table=True):
-    """Kullanıcı Tablosu"""
+    """User table."""
+
     __tablename__ = "users"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     email: str = Field(unique=True, index=True)
     password_hash: str
     role: UserRole = Field(default=UserRole.patient)
     full_name: str
-    
-    # İlişkiler
+
     appointments_as_doctor: List["Appointment"] = Relationship(
         back_populates="doctor",
-        sa_relationship_kwargs={"foreign_keys": "Appointment.doctor_id"}
+        sa_relationship_kwargs={"foreign_keys": "Appointment.doctor_id"},
     )
     appointments_as_patient: List["Appointment"] = Relationship(
         back_populates="patient",
-        sa_relationship_kwargs={"foreign_keys": "Appointment.patient_id"}
+        sa_relationship_kwargs={"foreign_keys": "Appointment.patient_id"},
     )
 
 
 class Appointment(SQLModel, table=True):
-    """Randevu Tablosu"""
+    """Appointment table."""
+
     __tablename__ = "appointments"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     doctor_id: int = Field(foreign_key="users.id")
     patient_id: int = Field(foreign_key="users.id")
     start_time: datetime
     status: AppointmentStatus = Field(default=AppointmentStatus.active)
-    
-    # İlişkiler
+
     doctor: Optional[User] = Relationship(
         back_populates="appointments_as_doctor",
-        sa_relationship_kwargs={"foreign_keys": "[Appointment.doctor_id]"}
+        sa_relationship_kwargs={"foreign_keys": "[Appointment.doctor_id]"},
     )
     patient: Optional[User] = Relationship(
         back_populates="appointments_as_patient",
-        sa_relationship_kwargs={"foreign_keys": "[Appointment.patient_id]"}
+        sa_relationship_kwargs={"foreign_keys": "[Appointment.patient_id]"},
     )
 
 
-# Pydantic Schemas (Validation)
+# Pydantic schemas
 class UserBase(SQLModel):
     email: EmailStr
     full_name: str
 
 
 class UserCreate(UserBase):
-    """Kullanıcı kayıt şeması"""
+    """User registration schema."""
+
     password: str
-    
-    @validator('password')
+
+    @validator("password")
     def validate_password(cls, v):
         if len(v) < 8:
-            raise ValueError('Şifre en az 8 karakter olmalıdır')
-        
+            raise ValueError("Şifre en az 8 karakter olmalıdır")
+
         if not any(char.isupper() for char in v):
-            raise ValueError('Şifre en az 1 büyük harf içermelidir')
-        
+            raise ValueError("Şifre en az 1 büyük harf içermelidir")
+
         if not any(char.islower() for char in v):
-            raise ValueError('Şifre en az 1 küçük harf içermelidir')
-        
+            raise ValueError("Şifre en az 1 küçük harf içermelidir")
+
         if not any(char.isdigit() for char in v):
-            raise ValueError('Şifre en az 1 rakam içermelidir')
-        
-        # Özel karakter kontrolü
+            raise ValueError("Şifre en az 1 rakam içermelidir")
+
         special_chars = "!@#$%^&*(),.?\":{}|<>"
         if not any(char in special_chars for char in v):
-            raise ValueError('Şifre en az 1 özel karakter içermelidir (!@#$%^&* vb.)')
-        
+            raise ValueError("Şifre en az 1 özel karakter içermelidir (!@#$%^&* vb.)")
+
         return v
-    
-    @validator('full_name')
+
+    @validator("full_name")
     def validate_full_name(cls, v):
         v = v.strip()
         if len(v) < 2:
-            raise ValueError('İsim en az 2 karakter olmalıdır')
-        
+            raise ValueError("İsim en az 2 karakter olmalıdır")
+
         if len(v) > 100:
-            raise ValueError('İsim çok uzun (maksimum 100 karakter)')
-        
-        # Sadece harf, boşluk ve Türkçe karakterler
+            raise ValueError("İsim çok uzun (maksimum 100 karakter)")
+
         import re
-        if not re.match(r'^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$', v):
-            raise ValueError('İsim sadece harf içermelidir')
-        
+
+        if not re.match(r"^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$", v):
+            raise ValueError("İsim sadece harf içermelidir")
+
         return v
-    
-    @validator('email')
+
+    @validator("email")
     def validate_email(cls, v):
-        # EmailStr zaten format kontrolü yapıyor, ekstra kontroller
         if len(v) > 255:
-            raise ValueError('Email adresi çok uzun')
+            raise ValueError("Email adresi çok uzun")
         return v.lower().strip()
 
 
 class UserLogin(SQLModel):
-    """Kullanıcı giriş şeması"""
+    """User login schema."""
+
     email: EmailStr
     password: str
 
 
 class UserRead(UserBase):
-    """Kullanıcı okuma şeması"""
+    """User read schema."""
+
     id: int
     role: UserRole
 
 
 class AppointmentCreate(SQLModel):
-    """Randevu oluşturma şeması"""
+    """Appointment creation schema."""
+
     doctor_id: int
     start_time: datetime
-    
-    @validator('start_time')
+
+    @validator("start_time")
     def validate_start_time(cls, v):
         if v < datetime.now():
-            raise ValueError('Randevu zamanı geçmişte olamaz')
+            raise ValueError("Randevu zamanı geçmişte olamaz")
         return v
 
 
 class AppointmentRead(SQLModel):
-    """Randevu okuma şeması"""
+    """Appointment read schema."""
+
     id: int
     doctor_id: int
     patient_id: int
@@ -151,6 +155,8 @@ class AppointmentRead(SQLModel):
 
 
 class Token(SQLModel):
-    """JWT Token şeması"""
+    """JWT token schema."""
+
     access_token: str
     token_type: str = "bearer"
+

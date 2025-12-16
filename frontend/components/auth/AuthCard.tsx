@@ -7,19 +7,19 @@ import PrimaryButton from "../PrimaryButton";
 type Mode = "initial" | "login" | "register";
 
 interface AuthCardProps {
-  mode: Mode;
-  isExpanded: boolean;
-  onLogin: () => void;
-  onRegister: () => void;
-  onBack: () => void;
+  mode?: Mode;
+  isExpanded?: boolean;
+  onLogin?: () => void;
+  onRegister?: () => void;
+  onBack?: () => void;
 }
 
 const AuthCard: React.FC<AuthCardProps> = ({
-  mode,
-  isExpanded,
-  onLogin,
-  onRegister,
-  onBack,
+  mode = "initial",
+  isExpanded = false,
+  onLogin = () => {},
+  onRegister = () => {},
+  onBack = () => {},
 }) => {
   const showLogin = mode === "login";
   const showRegister = mode === "register";
@@ -91,3 +91,4 @@ const AuthCard: React.FC<AuthCardProps> = ({
 };
 
 export default AuthCard;
+

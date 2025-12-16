@@ -3,7 +3,7 @@ import React from "react";
 import { TopbarProps } from "./types";
 
 const Topbar: React.FC<TopbarProps> = ({ clinicName, role, onToggleSidebar, isMobile }) => {
-  const today = new Date().toLocaleDateString("tr-TR", {
+  const today = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",

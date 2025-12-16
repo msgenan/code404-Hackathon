@@ -127,15 +127,6 @@ export function getUserData(): any {
   return data ? JSON.parse(data) : null;
 }
 
-// Auth API methods
-api.register = async function(data: { email: string; password: string; full_name: string }) {
-  return api.post("/auth/register", data);
-};
-
-api.login = async function(data: { email: string; password: string }) {
-  return api.post("/auth/login", data);
-};
-
 api.getDoctors = async function() {
   return api.get("/doctors");
 };
@@ -146,6 +137,14 @@ api.getMyAppointments = async function() {
 
 api.createAppointment = async function(data: { doctor_id: number; start_time: string }) {
   return api.post("/appointments", data);
+};
+// Auth API methods
+api.register = async function(data: { email: string; password: string; full_name: string }) {
+  return api.post("/auth/register", data);
+};
+
+api.login = async function(data: { email: string; password: string }) {
+  return api.post("/auth/login", data);
 };
 
 // Type definitions
