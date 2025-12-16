@@ -37,19 +37,19 @@ services:
       dockerfile: Dockerfile.dev
     container_name: appointment_backend
     ports:
-      - "8001:8000"  # Debug port - Use nginx on port 80 for normal access
+      - "8000:8000"  # Direct backend access
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      REDIS_HOST: redis
-      REDIS_PORT: ${REDIS_PORT}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      SECRET_KEY: ${SECRET_KEY}
     volumes:
       - ./backend:/code
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
@@ -58,8 +58,9 @@ services:
       dockerfile: Dockerfile.dev
     container_name: appointment_frontend
     ports:
-      - "3001:3000"  # Debug port - Use nginx on port 80 for normal access
+      - "3000:3000"  # Direct frontend access
     environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       WATCHPACK_POLLING: "true"
     volumes:
       - ./frontend:/app

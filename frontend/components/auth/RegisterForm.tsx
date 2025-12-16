@@ -1,5 +1,8 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import RoleSelector, { Role } from "./RoleSelector";
+import { api, saveToken } from "@/lib/api";
 
 export interface RegisterFormProps {
   onSwitchToLogin?: () => void;
@@ -11,15 +14,44 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
+  const router = useRouter();
 
   const passwordsMatch = useMemo(
     () => password.length > 0 && password === confirmPassword,
     [password, confirmPassword]
   );
-  const disabled = !fullName || !email || !password || !confirmPassword || !passwordsMatch;
+  const disabled = !fullName || !email || !password || !confirmPassword || !passwordsMatch || loading;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      await api.register({
+        email,
+        password,
+        full_name: fullName,
+      });
+      
+      setSuccess("Kayıt başarılı! Giriş yapılıyor...");
+      
+      // Otomatik giriş yap
+      const loginResponse = await api.login({ email, password });
+      saveToken(loginResponse.access_token);
+      
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Kayıt başarısız");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,13 +136,25 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         )}
       </div>
 
+      {error && (
+        <div className="bg-rose-50 text-rose-600 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-emerald-50 text-emerald-600 p-3 rounded-lg text-sm">
+          {success}
+        </div>
+      )}
+
       <div>
         <button
           type="submit"
           disabled={disabled}
           className="w-full py-2 rounded-lg bg-emerald-600 text-white font-medium hover:bg-emerald-700 disabled:opacity-60 transition"
         >
-          Create account
+          {loading ? "Kayıt yapılıyor..." : "Create account"}
         </button>
       </div>
 
