@@ -15,11 +15,7 @@ async def test_health_check():
         transport=ASGITransport(app=app), base_url="http://test"
     ) as client:
         response = await client.get("/health")
-
-        # Assert status code
         assert response.status_code == 200
-
-        # Assert response body
         assert response.json() == {"status": "ok"}
 
 

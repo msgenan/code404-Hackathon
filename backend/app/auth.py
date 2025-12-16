@@ -9,50 +9,44 @@ from sqlmodel import Session, select
 from app.database import get_session
 from app.models import User
 
-# Şifre hashleme context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# JWT ayarları
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 saat
-
-# HTTP Bearer token şeması
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 security = HTTPBearer()
 
 
 def hash_password(password: str) -> str:
-    """Şifreyi hashle"""
+    """Hash the password"""
     return pwd_context.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Şifreyi doğrula"""
+    """Verify the password"""
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """JWT access token oluştur"""
+    """Create JWT access token"""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 
 def decode_token(token: str) -> dict:
-    """JWT token'ı decode et"""
+    """Decode JWT token"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token doğrulanamadı",
+            detail="Token could not be verified",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -61,7 +55,7 @@ async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     session: Session = Depends(get_session)
 ) -> User:
-    """Token'dan mevcut kullanıcıyı al (Dependency)"""
+    """Get current user from token (Dependency)"""
     token = credentials.credentials
     payload = decode_token(token)
     
@@ -69,7 +63,7 @@ async def get_current_user(
     if user_id is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Kullanıcı bulunamadı",
+            detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -77,15 +71,13 @@ async def get_current_user(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Kullanıcı bulunamadı",
+            detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
     return user
 
-
 def authenticate_user(email: str, password: str, session: Session) -> Optional[User]:
-    """Kullanıcı kimlik doğrulaması"""
+    """Authenticate user"""
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
     

@@ -1,4 +1,4 @@
-from .base import (
+from ..schemas.base import (
     User,
     Appointment,
     UserRole,
