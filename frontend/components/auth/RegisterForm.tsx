@@ -1,6 +1,5 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import RoleSelector, { Role } from "./RoleSelector";
 
 export interface RegisterFormProps {
   onSwitchToLogin?: () => void;
@@ -11,7 +10,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [role, setRole] = useState<Role>("patient");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const passwordsMatch = useMemo(
@@ -104,11 +102,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         {confirmPassword.length > 0 && !passwordsMatch && (
           <p className="text-rose-600 text-sm mt-1">Passwords do not match</p>
         )}
-      </div>
-
-      <div>
-        <span className="block text-sm font-medium text-slate-700 mb-2">Role</span>
-        <RoleSelector value={role} onChange={setRole} />
       </div>
 
       <div>
