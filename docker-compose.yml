@@ -36,6 +36,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: appointment_backend
+    ports:
+      - "8000:8000"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}

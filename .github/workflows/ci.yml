@@ -218,9 +218,13 @@ jobs:
           docker-compose up -d
           sleep 30
       
-      - name: Health check backend
+      - name: Health check backend (direct)
         run: |
           curl --retry 10 --retry-delay 5 --retry-connrefused http://localhost:8000/health || exit 1
+      
+      - name: Health check backend (via nginx)
+        run: |
+          curl --retry 10 --retry-delay 5 --retry-connrefused http://localhost/api/health || exit 1
       
       - name: Health check frontend
         run: |

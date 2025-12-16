@@ -74,9 +74,15 @@ def on_startup():
 
     create_db_and_tables()
     with Session(engine) as session:
-        existing_users = session.exec(select(User)).all()
+        # Check if doctor already exists to avoid duplicate key error
+        existing_doctor = session.exec(
+            select(User).where(User.email == "doCtor@hospital.com")
+        ).first()
+        existing_patient = session.exec(
+            select(User).where(User.email == "patient@hospital.com")
+        ).first()
 
-        if not existing_users:
+        if not existing_doctor:
             doctor = User(
                 email="doCtor@hospital.com",
                 password_hash=hash_password("doCtor123"),
@@ -84,6 +90,9 @@ def on_startup():
                 full_name="Dr. Ahmet Yilmaz",
             )
             session.add(doctor)
+            print("✅ Added doctor seed data")
+        
+        if not existing_patient:
             patient = User(
                 email="patient@hospital.com",
                 password_hash=hash_password("patient123"),
@@ -91,5 +100,7 @@ def on_startup():
                 full_name="Mehmet Demir",
             )
             session.add(patient)
+            print("✅ Added patient seed data")
+        
+        if not existing_doctor or not existing_patient:
             session.commit()
-            print("✅ Seed data added: 1 Doctor, 1 Patient")
