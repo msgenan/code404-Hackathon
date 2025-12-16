@@ -11,6 +11,13 @@ on:
       - main
       - dev
 
+# GitHub Actions permissions
+permissions:
+  contents: read          # Repo okuma
+  security-events: write  # Security scan sonuçları yükleme
+  actions: read          # Workflow artifacts okuma
+  packages: write        # Container registry push
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME_BACKEND: ${{ github.repository }}/backend
