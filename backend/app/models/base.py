@@ -72,9 +72,47 @@ class UserCreate(UserBase):
     
     @validator('password')
     def validate_password(cls, v):
-        if len(v) < 6:
-            raise ValueError('Şifre en az 6 karakter olmalıdır')
+        if len(v) < 8:
+            raise ValueError('Şifre en az 8 karakter olmalıdır')
+        
+        if not any(char.isupper() for char in v):
+            raise ValueError('Şifre en az 1 büyük harf içermelidir')
+        
+        if not any(char.islower() for char in v):
+            raise ValueError('Şifre en az 1 küçük harf içermelidir')
+        
+        if not any(char.isdigit() for char in v):
+            raise ValueError('Şifre en az 1 rakam içermelidir')
+        
+        # Özel karakter kontrolü
+        special_chars = "!@#$%^&*(),.?\":{}|<>"
+        if not any(char in special_chars for char in v):
+            raise ValueError('Şifre en az 1 özel karakter içermelidir (!@#$%^&* vb.)')
+        
         return v
+    
+    @validator('full_name')
+    def validate_full_name(cls, v):
+        v = v.strip()
+        if len(v) < 2:
+            raise ValueError('İsim en az 2 karakter olmalıdır')
+        
+        if len(v) > 100:
+            raise ValueError('İsim çok uzun (maksimum 100 karakter)')
+        
+        # Sadece harf, boşluk ve Türkçe karakterler
+        import re
+        if not re.match(r'^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$', v):
+            raise ValueError('İsim sadece harf içermelidir')
+        
+        return v
+    
+    @validator('email')
+    def validate_email(cls, v):
+        # EmailStr zaten format kontrolü yapıyor, ekstra kontroller
+        if len(v) > 255:
+            raise ValueError('Email adresi çok uzun')
+        return v.lower().strip()
 
 
 class UserLogin(SQLModel):
