@@ -60,12 +60,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         </div>
       </div>
 
-      {error && (
-        <div className="bg-rose-50 text-rose-600 p-3 rounded-lg text-sm">
-          {error}
-        </div>
-      )}
-
       <div>
         <button
           type="submit"

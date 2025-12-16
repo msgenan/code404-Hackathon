@@ -11,9 +11,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [loading] = useState<boolean>(false);
-  const [error] = useState<string>("");
-  const [success] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
 
   const passwordsMatch = useMemo(
     () => password.length > 0 && password === confirmPassword,
@@ -21,9 +21,41 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   );
   const disabled = !fullName || !email || !password || !confirmPassword || !passwordsMatch || loading;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Register", { fullName, email });
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          full_name: fullName,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Kayıt başarısız");
+      }
+
+      setSuccess("Kayıt başarılı! Giriş yapabilirsiniz.");
+      setFullName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setTimeout(() => {
+        if (onSwitchToLogin) onSwitchToLogin();
+      }, 1500);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Bir hata oluştu");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -117,6 +149,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           {loading ? "Kayıt yapılıyor..." : "Create account"}
         </button>
       </div>
+
+      {error && (
+        <div className="bg-rose-50 text-rose-600 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="bg-emerald-50 text-emerald-600 p-3 rounded-lg text-sm">
+          {success}
+        </div>
+      )}
 
       <div className="flex items-center justify-between text-sm text-slate-500">
         <button
