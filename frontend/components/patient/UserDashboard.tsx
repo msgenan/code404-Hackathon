@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import UserCalendarPlaceholder, { Slot } from "./UserCalendarPlaceholder";
 import { SidebarItemConfig } from "../shared/Sidebar";
+import { AppointmentItem } from "./AppointmentCard";
 
 interface SummaryCard {
   label: string;
@@ -98,47 +99,52 @@ const UserDashboard: React.FC = () => {
       activeMenu={activeMenu}
       onMenuChange={setActiveMenu}
     >
-      <section className="grid gap-4 md:grid-cols-3">
-        {summaryCards.map((card) => (
-          <div
-            key={card.label}
-            className={`rounded-2xl px-5 py-4 shadow-md shadow-sky-50 transition hover:-translate-y-0.5 hover:shadow-lg ${toneStyles[card.tone]}`}
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-600">{card.label}</p>
-            <p className="text-2xl font-bold leading-tight">{card.value}</p>
-            <p className="text-sm text-slate-600">{card.hint}</p>
-          </div>
-        ))}
-      </section>
-
-      <UserCalendarPlaceholder doctors={doctors} slots={slots} />
-
-      <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
-          <div className="flex items-center justify-between pb-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Appointments</p>
-              <h4 className="text-lg font-bold text-slate-900">Your bookings</h4>
-            </div>
-            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">Static</span>
-          </div>
-          <div className="space-y-2">
-            {["General check · Jan 12 · 10:30", "Derm consult · Feb 02 · 14:00"].map((appointment) => (
+      {activeMenu === "dashboard" && (
+        <>
+          <section className="grid gap-4 md:grid-cols-3">
+            {summaryCards.map((card) => (
               <div
-                key={appointment}
-                className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:shadow"
+                key={card.label}
+                className={`rounded-2xl px-5 py-4 shadow-md shadow-sky-50 transition hover:-translate-y-0.5 hover:shadow-lg ${toneStyles[card.tone]}`}
               >
-                <span>{appointment}</span>
-                <span className="text-xs text-slate-500">Confirmed</span>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-600">{card.label}</p>
+                <p className="text-2xl font-bold leading-tight">{card.value}</p>
+                <p className="text-sm text-slate-600">{card.hint}</p>
               </div>
             ))}
-            <p className="rounded-2xl bg-white px-4 py-3 text-xs text-slate-500 ring-1 ring-dashed ring-slate-200">
-              Connect to the backend to load live appointment data.
-            </p>
-          </div>
-        </div>
+          </section>
 
-        <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
+          <AppointmentsList appointments={appointments} />
+
+          <section className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
+              <div className="flex items-center justify-between pb-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Waiting List</p>
+                  <h4 className="text-lg font-bold text-slate-900">Live status</h4>
+                </div>
+                <span className="rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">Live</span>
+              </div>
+              <ul className="space-y-2">
+                {["#04 · You · 14m", "#05 · R. Kaya · 18m", "#06 · T. Sousa · 21m"].map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-100"
+                  >
+                    <span>{item}</span>
+                    <span className="text-xs text-slate-500">Pager updates</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        </>
+      )}
+
+      {activeMenu === "appointments" && <AppointmentsList appointments={appointments} />}
+
+      {activeMenu === "waiting" && (
+        <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
           <div className="flex items-center justify-between pb-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Waiting List</p>
@@ -157,8 +163,34 @@ const UserDashboard: React.FC = () => {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {activeMenu === "pager" && (
+        <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
+          <div className="flex items-center justify-between pb-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Pager Chat</p>
+              <h4 className="text-lg font-bold text-slate-900">Recent threads</h4>
+            </div>
+            <span className="rounded-full bg-gradient-to-r from-sky-500 to-emerald-500 px-3 py-1 text-xs font-semibold text-white shadow-sm">Live</span>
+          </div>
+          <div className="space-y-2">
+            {["Front desk: Arrival confirmed", "Nurse: Vitals soon", "Billing: Coverage check"].map((topic) => (
+              <div
+                key={topic}
+                className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition hover:-translate-y-0.5 hover:shadow"
+              >
+                <span>{topic}</span>
+                <span className="text-xs text-slate-500">Just now</span>
+              </div>
+            ))}
+            <p className="rounded-2xl bg-white px-4 py-3 text-xs text-slate-500 ring-1 ring-dashed ring-slate-200">
+              Connect to real-time messaging to sync pager threads.
+            </p>
+          </div>
+        </section>
+      )}
     </DashboardLayout>
   );
 };
