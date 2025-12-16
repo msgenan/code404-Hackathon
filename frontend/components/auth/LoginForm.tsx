@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import RoleSelector, { Role } from "./RoleSelector";
+import { api, saveToken } from "@/lib/api";
 
 export interface LoginFormProps {
   onSwitchToRegister?: () => void;
@@ -11,11 +13,26 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [password, setPassword] = useState<string>("");
   const [role, setRole] = useState<Role>("patient");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const router = useRouter();
 
-  const disabled = !email || !password;
+  const disabled = !email || !password || loading;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await api.login({ email, password });
+      saveToken(response.access_token);
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Giriş başarısız");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,13 +82,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         <RoleSelector value={role} onChange={setRole} />
       </div>
 
+      {error && (
+        <div className="bg-rose-50 text-rose-600 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+
       <div>
         <button
           type="submit"
           disabled={disabled}
           className="w-full py-2 rounded-lg bg-sky-600 text-white font-medium hover:bg-sky-700 disabled:opacity-60 transition"
         >
-          Login
+          {loading ? "Giriş yapılıyor..." : "Login"}
         </button>
       </div>
 
