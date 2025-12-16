@@ -21,7 +21,7 @@ const DoctorCalendar: React.FC<DoctorCalendarProps> = ({ timeSlots, rows }) => {
       <div className="flex flex-col gap-3 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Doctor / Room Calendar</p>
-          <h3 className="text-xl font-bold text-slate-900">Today's coverage</h3>
+          <h3 className="text-xl font-bold text-slate-900">Today&apos;s coverage</h3>
           <p className="text-sm text-slate-600">Hover cells to inspect; UI only, no live data.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

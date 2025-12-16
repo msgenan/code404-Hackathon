@@ -2,6 +2,11 @@
 import React, { useState } from "react";
 import { api, saveToken } from "@/lib/api";
 
+interface LoginResponse {
+  access_token?: string;
+  token?: string;
+}
+
 export interface LoginFormProps {
   onSwitchToRegister?: () => void;
 }
@@ -15,8 +20,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await api.login({ email, password });
-      const token = (res as any)?.access_token || (res as any)?.token;
+      const res = await api.login({ email, password }) as LoginResponse;
+      const token = res?.access_token || res?.token;
       if (token) {
         saveToken(token);
       }

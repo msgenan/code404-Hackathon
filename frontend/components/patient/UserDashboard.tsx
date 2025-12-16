@@ -83,14 +83,6 @@ const UserDashboard: React.FC = () => {
     []
   );
 
-  const doctors = ["Dr. Smith", "Dr. Patel", "Dr. Alvarez"];
-  const slots: Slot[] = [
-    { time: "09:00", label: "Open", state: "available" },
-    { time: "10:00", label: "Booked", state: "booked" },
-    { time: "11:00", label: "Open", state: "available" },
-    { time: "12:00", label: "-", state: "empty" },
-  ];
-
   return (
     <DashboardLayout
       role="Patient"

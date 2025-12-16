@@ -5,7 +5,7 @@ const API_BASE_URL =
     : process.env.NEXT_PUBLIC_API_URL || "http://backend:8000"; // Server-side: Docker network
 
 interface RequestOptions extends RequestInit {
-  body?: any;
+  body?: Record<string, unknown> | string;
 }
 
 class ApiClient {
@@ -78,11 +78,11 @@ class ApiClient {
     return this.request<T>(endpoint, { method: "GET" });
   }
 
-  async post<T>(endpoint: string, body?: any): Promise<T> {
+  async post<T>(endpoint: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>(endpoint, { method: "POST", body });
   }
 
-  async put<T>(endpoint: string, body?: any): Promise<T> {
+  async put<T>(endpoint: string, body?: Record<string, unknown>): Promise<T> {
     return this.request<T>(endpoint, { method: "PUT", body });
   }
 
@@ -143,12 +143,12 @@ export function removeToken(): void {
   localStorage.removeItem("user_data");
 }
 
-export function saveUserData(data: any): void {
+export function saveUserData(data: User): void {
   if (typeof window === "undefined") return;
   localStorage.setItem("user_data", JSON.stringify(data));
 }
 
-export function getUserData(): any {
+export function getUserData(): User | null {
   if (typeof window === "undefined") return null;
   const data = localStorage.getItem("user_data");
   return data ? JSON.parse(data) : null;
