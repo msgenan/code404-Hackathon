@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
 import FeatureItem from "@/components/FeatureItem";
 import PrimaryButton from "@/components/PrimaryButton";
 
@@ -67,13 +68,15 @@ const features = [
 ];
 
 export default function WelcomePage() {
+  const router = useRouter();
+
   const handleLogin = useCallback(() => {
-    console.log("Navigate to Login");
-  }, []);
+    router.push("/auth?mode=login");
+  }, [router]);
 
   const handleRegister = useCallback(() => {
-    console.log("Navigate to Register");
-  }, []);
+    router.push("/auth?mode=register");
+  }, [router]);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-sky-50 via-white to-emerald-50">

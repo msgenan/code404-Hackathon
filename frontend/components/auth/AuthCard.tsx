@@ -1,12 +1,21 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
 export type Tab = "login" | "register";
 
 const AuthCard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("login");
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode") as Tab | null;
+  const [activeTab, setActiveTab] = useState<Tab>(mode === "register" ? "register" : "login");
+
+  useEffect(() => {
+    if (mode === "login" || mode === "register") {
+      setActiveTab(mode);
+    }
+  }, [mode]);
 
   return (
     <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6 sm:p-8">
