@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import RoleSelector, { Role } from "./RoleSelector";
 
 export interface LoginFormProps {
   onSwitchToRegister?: () => void;
@@ -9,7 +8,6 @@ export interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [role, setRole] = useState<Role>("patient");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const disabled = !email || !password;
@@ -58,11 +56,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
-      </div>
-
-      <div>
-        <span className="block text-sm font-medium text-slate-700 mb-2">Role</span>
-        <RoleSelector value={role} onChange={setRole} />
       </div>
 
       <div>
