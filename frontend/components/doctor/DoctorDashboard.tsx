@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
-import DoctorCalendarPlaceholder from "./DoctorCalendarPlaceholder";
+import DoctorCalendarPlaceholder, { Slot } from "./DoctorCalendarPlaceholder";
 import { SidebarItemConfig } from "../shared/Sidebar";
 
 interface SummaryCard {
@@ -81,7 +81,7 @@ const DoctorDashboard: React.FC = () => {
   );
 
   const rooms = ["Room A", "Room B", "Room C"]; 
-  const slots = [
+  const slots: Slot[] = [
     { time: "09:00", label: "Dr. Smith", state: "busy" },
     { time: "10:00", label: "New consult", state: "available" },
     { time: "11:00", label: "Follow-up", state: "available" },
