@@ -11,7 +11,6 @@ export interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [role, setRole] = useState<Role>("patient");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");

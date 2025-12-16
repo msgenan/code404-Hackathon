@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Depends, HTTPException, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlmodel import Session, select
 from datetime import datetime, timedelta
@@ -30,6 +31,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Initialize Prometheus metrics
+Instrumentator().instrument(app).expose(app)
 
 
 # JSON formatında hata döndür (HTML değil)

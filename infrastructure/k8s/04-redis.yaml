@@ -1,3 +1,19 @@
+---
+# PersistentVolumeClaim for Redis Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data-pvc
+  namespace: appointment-system
+  labels:
+    app: redis
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -35,6 +51,10 @@ spec:
       containers:
         - name: redis
           image: redis:7-alpine
+          command:
+            - redis-server
+            - --appendonly
+            - "yes"
           ports:
             - containerPort: 6379
               name: redis
@@ -66,4 +86,5 @@ spec:
               mountPath: /data
       volumes:
         - name: redis-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: redis-data-pvc
