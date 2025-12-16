@@ -5,7 +5,7 @@ describe('WelcomePage Component', () => {
   it('renders the welcome page heading', () => {
     render(<WelcomePage />)
     
-    const heading = screen.getByText(/Healthcare appointments made simple/i)
+    const heading = screen.getByText(/Smart Appointment & Queue Management/i)
     
     expect(heading).toBeInTheDocument()
   })
@@ -25,8 +25,8 @@ describe('WelcomePage Component', () => {
   it('renders auth buttons', () => {
     render(<WelcomePage />)
     
-    const loginButton = screen.getByText(/Login/i)
-    const registerButton = screen.getByText(/Register/i)
+    const loginButton = screen.getByRole('button', { name: /Login/i })
+    const registerButton = screen.getByRole('button', { name: /Register/i })
     
     expect(loginButton).toBeInTheDocument()
     expect(registerButton).toBeInTheDocument()
