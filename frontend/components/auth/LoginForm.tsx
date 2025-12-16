@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import RoleSelector, { Role } from "./RoleSelector";
 import { api, saveToken } from "@/lib/api";
 
 export interface LoginFormProps {
@@ -11,7 +10,6 @@ export interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [role, setRole] = useState<Role>("patient");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -75,11 +73,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
-      </div>
-
-      <div>
-        <span className="block text-sm font-medium text-slate-700 mb-2">Role</span>
-        <RoleSelector value={role} onChange={setRole} />
       </div>
 
       {error && (

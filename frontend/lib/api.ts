@@ -120,3 +120,12 @@ export function getUserData(): any {
   const data = localStorage.getItem("user_data");
   return data ? JSON.parse(data) : null;
 }
+
+// Auth API methods
+api.register = async function(data: { email: string; password: string; full_name: string }) {
+  return api.post("/auth/register", data);
+};
+
+api.login = async function(data: { email: string; password: string }) {
+  return api.post("/auth/login", data);
+};
