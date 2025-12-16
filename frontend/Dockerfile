@@ -52,4 +52,5 @@ ENV HOSTNAME="0.0.0.0"
 ENV PORT=3000
 
 # Start production server
-CMD ["node", "server.js"]
+# Next.js standalone creates the server file in the root
+CMD ["node", "./server.js"]
