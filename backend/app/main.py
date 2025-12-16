@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI(
@@ -8,6 +9,9 @@ app = FastAPI(
     description="Hackathon project for Case 3: Smart Appointment and Queue Management",
     version="0.1.0",
 )
+
+# Initialize Prometheus metrics
+Instrumentator().instrument(app).expose(app)
 
 
 # JSON formatında hata döndür (HTML değil)
