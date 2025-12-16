@@ -110,6 +110,12 @@ export function logout(): void {
   localStorage.removeItem("user_data");
 }
 
+export function removeToken(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("auth_token");
+  localStorage.removeItem("user_data");
+}
+
 export function saveUserData(data: any): void {
   if (typeof window === "undefined") return;
   localStorage.setItem("user_data", JSON.stringify(data));
@@ -129,3 +135,33 @@ api.register = async function(data: { email: string; password: string; full_name
 api.login = async function(data: { email: string; password: string }) {
   return api.post("/auth/login", data);
 };
+
+api.getDoctors = async function() {
+  return api.get("/doctors");
+};
+
+api.getMyAppointments = async function() {
+  return api.get("/appointments/my");
+};
+
+api.createAppointment = async function(data: { doctor_id: number; start_time: string }) {
+  return api.post("/appointments", data);
+};
+
+// Type definitions
+export interface User {
+  id: number;
+  email: string;
+  full_name: string;
+  role: string;
+}
+
+export interface Appointment {
+  id: number;
+  doctor_id: number;
+  patient_id: number;
+  start_time: string;
+  status: string;
+  doctor?: User;
+  patient?: User;
+}
