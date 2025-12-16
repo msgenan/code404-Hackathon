@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: appointment-system
+  labels:
+    name: appointment-system
+    environment: production
