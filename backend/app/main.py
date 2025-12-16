@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI(
@@ -18,8 +18,8 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
         content={
             "error": exc.detail,
             "status_code": exc.status_code,
-            "path": str(request.url.path)
-        }
+            "path": str(request.url.path),
+        },
     )
 
 
@@ -30,12 +30,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={
             "error": "Validation Error",
             "details": exc.errors(),
-            "body": exc.body
-        }
+            "body": exc.body,
+        },
     )
 
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint."""
     return {"status": "ok"}
