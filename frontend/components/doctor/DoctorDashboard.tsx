@@ -111,7 +111,7 @@ const DoctorDashboard: React.FC = () => {
             ))}
           </section>
 
-          <DoctorCalendar timeSlots={timeSlots} rows={rows} />
+          <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />
 
           <section className="grid gap-4 md:grid-cols-2">
             <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
@@ -162,7 +162,7 @@ const DoctorDashboard: React.FC = () => {
         </>
       )}
 
-      {activeMenu === "calendar" && <DoctorCalendar timeSlots={timeSlots} rows={rows} />}
+      {activeMenu === "calendar" && <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />}
 
       {activeMenu === "waiting" && (
         <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">

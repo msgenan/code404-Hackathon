@@ -114,8 +114,6 @@ const UserDashboard: React.FC = () => {
             ))}
           </section>
 
-          <AppointmentsList appointments={appointments} />
-
           <section className="grid gap-4 md:grid-cols-2">
             <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
               <div className="flex items-center justify-between pb-3">
@@ -141,7 +139,15 @@ const UserDashboard: React.FC = () => {
         </>
       )}
 
-      {activeMenu === "appointments" && <AppointmentsList appointments={appointments} />}
+      {activeMenu === "appointments" && (
+        <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
+          <div className="pb-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">My Appointments</p>
+            <h4 className="text-lg font-bold text-slate-900">Upcoming visits</h4>
+          </div>
+          <p className="text-sm text-slate-500">No appointments scheduled yet.</p>
+        </section>
+      )}
 
       {activeMenu === "waiting" && (
         <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
