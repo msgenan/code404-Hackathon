@@ -110,6 +110,12 @@ export function logout(): void {
   localStorage.removeItem("user_data");
 }
 
+export function removeToken(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("auth_token");
+  localStorage.removeItem("user_data");
+}
+
 export function saveUserData(data: any): void {
   if (typeof window === "undefined") return;
   localStorage.setItem("user_data", JSON.stringify(data));
@@ -120,3 +126,67 @@ export function getUserData(): any {
   const data = localStorage.getItem("user_data");
   return data ? JSON.parse(data) : null;
 }
+
+// Auth API methods
+api.register = async function(data: { email: string; password: string; full_name: string }) {
+  return api.post("/auth/register", data);
+};
+
+api.login = async function(data: { email: string; password: string }) {
+  return api.post("/auth/login", data);
+};
+
+api.getDoctors = async function() {
+  return api.get("/doctors");
+};
+
+api.getMyAppointments = async function() {
+  return api.get("/appointments/my");
+};
+
+api.createAppointment = async function(data: { doctor_id: number; start_time: string }) {
+  return api.post("/appointments", data);
+};
+
+// Type definitions
+export interface User {
+  id: number;
+  email: string;
+  full_name: string;
+  role: string;
+}
+
+export interface Appointment {
+  id: number;
+  doctor_id: number;
+  patient_id: number;
+  start_time: string;
+  status: string;
+  doctor?: User;
+  patient?: User;
+}
+
+Harika sorular! İkisine de cevap vereyim:
+
+1. 🗄️ PostgreSQL Kullanımı
+Evet, projenizde PostgreSQL kullanıyorsunuz. Kontrol edelim:
+
+docker-compose.yml:
+
+backend/.env:
+
+✅ Tüm verileriniz (kullanıcılar, şifreler, randevular) PostgreSQL veritabanında tutuluyor.
+
+2. 🔒 Güvenlik Kuralları - Frontend vs Backend
+ÇOK ÖNEMLİ: Şu anda güvenlik açığınız var!
+
+❌ Şu Anki Sorun:
+Frontend'te validation yapıyorsunuz ama backend'te yok:
+
+Birisi F12 yapıp bu kontrolü bypass edebilir!
+
+✅ Doğru Yaklaşım:
+Backend'te de validation yapmalısınız:
+
+🛡️ Güvenlik Katmanları:
+🔧 Şimdi Backend'e Güvenlik Ekleyelim:

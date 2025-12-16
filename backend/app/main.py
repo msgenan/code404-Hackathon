@@ -2,7 +2,6 @@ from fastapi import FastAPI, Request, Depends, HTTPException, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from prometheus_fastapi_instrumentator import Instrumentator
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlmodel import Session, select
 from datetime import datetime, timedelta
@@ -38,7 +37,6 @@ Instrumentator().instrument(app).expose(app)
 
 # Initialize Redis Connection
 redis_client = redis.Redis(host='appointment_redis', port=6379, db=0, decode_responses=True)
-
 
 # JSON formatında hata döndür (HTML değil)
 @app.exception_handler(StarletteHTTPException)
@@ -110,27 +108,46 @@ async def health_check():
 @app.post("/auth/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 async def register(user_data: UserCreate, session: Session = Depends(get_session)):
     """Yeni hasta kaydı oluştur (Sadece patient rolü)"""
-    # Email kontrolü
-    existing_user = session.exec(select(User).where(User.email == user_data.email)).first()
-    if existing_user:
+    try:
+        # Email kontrolü
+        existing_user = session.exec(select(User).where(User.email == user_data.email)).first()
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Bu email zaten kayıtlı"
+            )
+        
+        # Yeni kullanıcı oluştur (Rolü zorla patient)
+        new_user = User(
+            email=user_data.email,
+            password_hash=hash_password(user_data.password),
+            role=UserRole.patient,  # Kayıt olurken sadece hasta rolü
+            full_name=user_data.full_name
+        )
+        
+        session.add(new_user)
+        session.commit()
+        session.refresh(new_user)
+        
+        return new_user
+    
+    except HTTPException:
+        # HTTPException'ları olduğu gibi fırlat
+        raise
+    except ValueError as e:
+        # Pydantic validation hatası
+        session.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Bu email zaten kayıtlı"
+            detail=str(e)
         )
-    
-    # Yeni kullanıcı oluştur (Rolü zorla patient)
-    new_user = User(
-        email=user_data.email,
-        password_hash=hash_password(user_data.password),
-        role=UserRole.patient,  # Kayıt olurken sadece hasta rolü
-        full_name=user_data.full_name
-    )
-    
-    session.add(new_user)
-    session.commit()
-    session.refresh(new_user)
-    
-    return new_user
+    except Exception as e:
+        # Beklenmeyen hatalar
+        session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Kayıt sırasında bir hata oluştu: {str(e)}"
+        )
 
 
 @app.post("/auth/login", response_model=Token)

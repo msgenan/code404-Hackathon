@@ -10,8 +10,11 @@ python-jose[cryptography]==3.3.0
 passlib==1.7.4
 bcrypt==4.0.1
 email-validator==2.1.0
+feat/concurrency-lock
 prometheus-fastapi-instrumentator
 redis==5.0.1
+prometheus-fastapi-instrumentator==6.1.0
+
 # Testing dependencies
 pytest==7.4.3
 pytest-asyncio==0.21.1
