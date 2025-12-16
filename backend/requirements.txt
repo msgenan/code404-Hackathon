@@ -5,6 +5,9 @@ asyncpg
 pydantic-settings
 redis
 
+# Observability
+prometheus-fastapi-instrumentator
+
 # Testing dependencies
 pytest
 pytest-asyncio
