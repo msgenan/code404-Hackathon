@@ -165,3 +165,28 @@ export interface Appointment {
   doctor?: User;
   patient?: User;
 }
+
+Harika sorular! İkisine de cevap vereyim:
+
+1. 🗄️ PostgreSQL Kullanımı
+Evet, projenizde PostgreSQL kullanıyorsunuz. Kontrol edelim:
+
+docker-compose.yml:
+
+backend/.env:
+
+✅ Tüm verileriniz (kullanıcılar, şifreler, randevular) PostgreSQL veritabanında tutuluyor.
+
+2. 🔒 Güvenlik Kuralları - Frontend vs Backend
+ÇOK ÖNEMLİ: Şu anda güvenlik açığınız var!
+
+❌ Şu Anki Sorun:
+Frontend'te validation yapıyorsunuz ama backend'te yok:
+
+Birisi F12 yapıp bu kontrolü bypass edebilir!
+
+✅ Doğru Yaklaşım:
+Backend'te de validation yapmalısınız:
+
+🛡️ Güvenlik Katmanları:
+🔧 Şimdi Backend'e Güvenlik Ekleyelim:
