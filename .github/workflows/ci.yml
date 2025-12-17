@@ -37,13 +37,13 @@ jobs:
         working-directory: backend
         run: ruff check .
       
-      - name: Run tests
+      - name: Run unit tests
         working-directory: backend
-        run: pytest
+        run: pytest -v
       
       - name: Build Docker image
         working-directory: backend
-        run: docker build -t appointment-backend:ci .
+        run: docker build -t appointment-backend:${{ github.sha }} .
 
   frontend:
     name: Frontend CI
@@ -68,10 +68,14 @@ jobs:
         working-directory: frontend
         run: npm run lint
       
-      - name: Run tests
+      - name: Run unit tests
         working-directory: frontend
-        run: npm test -- --passWithNoTests
+        run: npm test -- --passWithNoTests --coverage
+      
+      - name: Build Next.js application
+        working-directory: frontend
+        run: npm run build
       
       - name: Build Docker image
         working-directory: frontend
-        run: docker build -t appointment-frontend:ci .
+        run: docker build -t appointment-frontend:${{ github.sha }} .
