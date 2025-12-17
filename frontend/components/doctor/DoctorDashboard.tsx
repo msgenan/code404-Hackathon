@@ -68,12 +68,12 @@ const DoctorDashboard: React.FC = () => {
     []
   );
 
-  const rooms = ["Room A", "Room B", "Room C"]; 
-  const slots: Slot[] = [
-    { time: "09:00", label: "Dr. Smith", state: "busy" },
-    { time: "10:00", label: "New consult", state: "available" },
-    { time: "11:00", label: "Follow-up", state: "available" },
-    { time: "12:00", label: "—", state: "empty" },
+  const appointments = [
+    { time: "09:00", patient: "John Doe", type: "Consultation", day: "Today" },
+    { time: "10:00", patient: "Jane Smith", type: "Follow-up", day: "Today" },
+    { time: "11:00", patient: "Available", type: "—", day: "Today" },
+    { time: "14:00", patient: "Mike Johnson", type: "Check-up", day: "Today" },
+    { time: "15:30", patient: "Sarah Williams", type: "Consultation", day: "Today" },
   ];
 
   return (
@@ -99,27 +99,62 @@ const DoctorDashboard: React.FC = () => {
             ))}
           </section>
 
-          <div className="mb-6">
-            <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />
-          </div>
+          <section className="mb-6 rounded-3xl bg-white p-6 shadow-xl shadow-sky-100/50 ring-1 ring-slate-100">
+            <div className="flex items-center justify-between pb-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Schedule</p>
+                <h4 className="text-xl font-bold text-slate-900">Today's Appointments</h4>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {appointments.map((apt, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center justify-between rounded-2xl px-5 py-4 text-sm transition-all duration-150 ${
+                    apt.patient === "Available"
+                      ? "bg-gradient-to-r from-emerald-50 to-emerald-50/50 ring-1 ring-emerald-100"
+                      : "bg-gradient-to-r from-sky-50 to-sky-50/50 ring-1 ring-sky-100 hover:ring-sky-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="rounded-xl bg-white px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-200">
+                      {apt.time}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">{apt.patient}</p>
+                      <p className="text-xs text-slate-600">{apt.type}</p>
+                    </div>
+                  </div>
+                  {apt.patient !== "Available" && (
+                    <button className="rounded-lg bg-sky-500 px-4 py-2 text-xs font-semibold text-white transition hover:bg-sky-600">
+                      View Details
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
 
           <section className="grid gap-5 md:grid-cols-2">
             <div className="rounded-3xl bg-white p-6 shadow-xl shadow-sky-100/50 ring-1 ring-slate-100 hover:shadow-2xl transition-shadow duration-200">
               <div className="flex items-center justify-between pb-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Waiting List</p>
-                  <h4 className="text-xl font-bold text-slate-900">Priority patients</h4>
+                  <h4 className="text-xl font-bold text-slate-900">All Patients</h4>
                 </div>
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">Live</span>
               </div>
               <ul className="space-y-3">
-                {["Aziz Karim · Chest pain", "Leila Aydin · Post-op check", "Marcus Lee · Lab review"].map((item) => (
+                {["Aziz Karim", "Leila Aydin", "Marcus Lee", "Sarah Chen", "Tom Wilson"].map((item, idx) => (
                   <li
                     key={item}
                     className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-slate-50 to-slate-50/50 px-5 py-3.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-100 hover:ring-sky-200 transition-all duration-150"
                   >
-                    <span>{item}</span>
-                    <span className="text-xs font-medium text-slate-500">ETA 8m</span>
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-bold text-sky-700">#{idx + 1}</span>
+                      <span>{item}</span>
+                    </div>
+                    <span className="text-xs font-medium text-slate-500">Waiting</span>
                   </li>
                 ))}
               </ul>
@@ -153,22 +188,25 @@ const DoctorDashboard: React.FC = () => {
       )}
 
       {activeMenu === "waiting" && (
-        <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
-          <div className="flex items-center justify-between pb-3">
+        <section className="rounded-3xl bg-white p-6 shadow-xl shadow-sky-100/50 ring-1 ring-slate-100">
+          <div className="flex items-center justify-between pb-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Waiting List</p>
-              <h4 className="text-lg font-bold text-slate-900">Priority patients</h4>
+              <h4 className="text-xl font-bold text-slate-900">All Patients</h4>
             </div>
-            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">Live</span>
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">Live</span>
           </div>
-          <ul className="space-y-2">
-            {["Aziz Karim · Chest pain", "Leila Aydin · Post-op check", "Marcus Lee · Lab review"].map((item) => (
+          <ul className="space-y-3">
+            {["Aziz Karim", "Leila Aydin", "Marcus Lee", "Sarah Chen", "Tom Wilson", "Emma Davis", "Ryan Brown"].map((item, idx) => (
               <li
                 key={item}
-                className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-100"
+                className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-slate-50 to-slate-50/50 px-5 py-3.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-100 hover:ring-sky-200 transition-all duration-150"
               >
-                <span>{item}</span>
-                <span className="text-xs text-slate-500">ETA 8m</span>
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-bold text-sky-700">#{idx + 1}</span>
+                  <span>{item}</span>
+                </div>
+                <span className="text-xs font-medium text-slate-500">Waiting</span>
               </li>
             ))}
           </ul>

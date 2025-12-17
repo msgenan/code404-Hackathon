@@ -74,10 +74,22 @@ const departments = [
   "Pulmonology",
 ];
 
+const doctors = [
+  { name: "Dr. Sarah Chen", department: "Cardiology" },
+  { name: "Dr. Michael Roberts", department: "Cardiology" },
+  { name: "Dr. Emily Thompson", department: "Dermatology" },
+  { name: "Dr. James Wilson", department: "Orthopedics" },
+  { name: "Dr. Maria Garcia", department: "Pediatrics" },
+  { name: "Dr. David Lee", department: "Neurology" },
+  { name: "Dr. Amara Chen", department: "General Medicine" },
+  { name: "Dr. Robert Smith", department: "Gastroenterology" },
+];
+
 const UserDashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState<string>("dashboard");
   const [quickAction, setQuickAction] = useState<QuickAction>(null);
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
 
   const summaryCards: SummaryCard[] = useMemo(
     () => [
@@ -187,7 +199,7 @@ const UserDashboard: React.FC = () => {
         </>
       )}
 
-      {/* Book Appointment Flow */}
+      {/* Book Appointment Flow - Department Selection */}
       {activeMenu === "dashboard" && quickAction === "book" && !selectedDepartment && (
         <section className="space-y-4">
           <div className="flex items-center gap-4">
@@ -215,7 +227,7 @@ const UserDashboard: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h5 className="text-xl font-bold text-slate-900 mb-2">{dept}</h5>
-                    <p className="text-sm text-slate-600">View available appointments</p>
+                    <p className="text-sm text-slate-600">View available doctors</p>
                   </div>
                   <svg className="h-8 w-8 text-slate-300 transition-colors group-hover:text-sky-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M9 5l7 7-7 7" />
@@ -227,11 +239,55 @@ const UserDashboard: React.FC = () => {
         </section>
       )}
 
-      {activeMenu === "dashboard" && quickAction === "book" && selectedDepartment && (
+      {/* Book Appointment Flow - Doctor Selection */}
+      {activeMenu === "dashboard" && quickAction === "book" && selectedDepartment && !selectedDoctor && (
+        <section className="space-y-4">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSelectedDepartment(null)}
+              className="rounded-xl bg-white p-2 text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-50 hover:text-slate-900"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Select Doctor</p>
+              <h4 className="text-2xl font-bold text-slate-900">{selectedDepartment}</h4>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {doctors
+              .filter((doc) => doc.department === selectedDepartment)
+              .map((doc) => (
+                <button
+                  key={doc.name}
+                  onClick={() => setSelectedDoctor(doc.name)}
+                  className="group rounded-3xl bg-white p-6 text-left shadow-lg shadow-sky-100/50 ring-1 ring-slate-100 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:ring-sky-300"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-xl font-bold text-slate-900 mb-2">{doc.name}</h5>
+                      <p className="text-sm text-slate-600">{doc.department}</p>
+                    </div>
+                    <svg className="h-8 w-8 text-slate-300 transition-colors group-hover:text-sky-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+          </div>
+        </section>
+      )}
+
+      {activeMenu === "dashboard" && quickAction === "book" && selectedDepartment && selectedDoctor && (
         <BookingCalendar
           selectedDepartment={selectedDepartment}
+          selectedDoctor={selectedDoctor}
           onBack={() => {
             setSelectedDepartment(null);
+            setSelectedDoctor(null);
             setQuickAction(null);
           }}
         />

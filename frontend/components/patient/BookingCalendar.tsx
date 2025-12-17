@@ -9,10 +9,11 @@ interface TimeSlot {
 
 interface BookingCalendarProps {
   selectedDepartment: string;
+  selectedDoctor: string;
   onBack: () => void;
 }
 
-const BookingCalendar = ({ selectedDepartment, onBack }: BookingCalendarProps) => {
+const BookingCalendar = ({ selectedDepartment, selectedDoctor, onBack }: BookingCalendarProps) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
@@ -59,7 +60,7 @@ const BookingCalendar = ({ selectedDepartment, onBack }: BookingCalendarProps) =
 
   const handleBooking = () => {
     if (selectedDate && selectedTime) {
-      alert(`Appointment booked for ${selectedDepartment} on ${selectedDate} at ${selectedTime}`);
+      alert(`Appointment booked with ${selectedDoctor} (${selectedDepartment}) on ${selectedDate} at ${selectedTime}`);
       onBack();
     }
   };
@@ -78,7 +79,8 @@ const BookingCalendar = ({ selectedDepartment, onBack }: BookingCalendarProps) =
         </button>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Book Appointment</p>
-          <h4 className="text-2xl font-bold text-slate-900">{selectedDepartment}</h4>
+          <h4 className="text-2xl font-bold text-slate-900">{selectedDoctor}</h4>
+          <p className="text-sm text-slate-600">{selectedDepartment}</p>
         </div>
       </div>
 
@@ -156,6 +158,10 @@ const BookingCalendar = ({ selectedDepartment, onBack }: BookingCalendarProps) =
             </div>
           </div>
           <div className="mb-6 space-y-2 rounded-2xl bg-white/70 p-4 backdrop-blur-sm">
+            <div className="flex justify-between text-sm">
+              <span className="font-medium text-slate-600">Doctor:</span>
+              <span className="font-bold text-slate-900">{selectedDoctor}</span>
+            </div>
             <div className="flex justify-between text-sm">
               <span className="font-medium text-slate-600">Department:</span>
               <span className="font-bold text-slate-900">{selectedDepartment}</span>
