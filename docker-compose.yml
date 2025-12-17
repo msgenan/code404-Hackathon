@@ -35,6 +35,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: appointment-backend:latest
     container_name: appointment_backend
     ports:
       - "8000:8000"
@@ -56,7 +57,10 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: appointment-frontend:latest
     container_name: appointment_frontend
+    ports:
+      - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     depends_on:

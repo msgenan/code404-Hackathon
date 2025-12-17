@@ -101,7 +101,7 @@ jobs:
         with:
           context: ./backend
           push: false
-          tags: appointment-backend:${{ github.sha }}
+          tags: appointment-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=docker,dest=/tmp/backend-image.tar
@@ -168,7 +168,7 @@ jobs:
         with:
           context: ./frontend
           push: false
-          tags: appointment-frontend:${{ github.sha }}
+          tags: appointment-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=docker,dest=/tmp/frontend-image.tar
