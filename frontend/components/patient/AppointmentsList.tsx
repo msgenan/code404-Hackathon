@@ -14,14 +14,14 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ title = "My Appoint
     <div className="rounded-3xl bg-white p-5 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
       <div className="flex flex-col gap-2 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Patient · Schedule</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Hasta · Program</p>
           <h3 className="text-xl font-bold text-slate-900">{title}</h3>
-          <p className="text-sm text-slate-600">Static UI only. Connect API to sync live data.</p>
+          <p className="text-sm text-slate-600">Randevularınız burada görüntülenir</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <StatusBadge label="Upcoming" tone="emerald" />
-          <StatusBadge label="Completed" tone="slate" />
-          <StatusBadge label="Cancelled" tone="rose" />
+          <StatusBadge label="Gelecek" tone="emerald" />
+          <StatusBadge label="Tamamlandı" tone="slate" />
+          <StatusBadge label="İptal" tone="rose" />
         </div>
       </div>
 
@@ -35,8 +35,8 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ title = "My Appoint
               <rect x="4" y="4" width="16" height="16" rx="2" />
             </svg>
           </div>
-          <p>No appointments yet.</p>
-          <p className="text-xs text-slate-500">You will see your booked visits here once connected.</p>
+          <p>Henüz randevunuz yok.</p>
+          <p className="text-xs text-slate-500">Randevularınız oluşturulduğunda burada görünecektir.</p>
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

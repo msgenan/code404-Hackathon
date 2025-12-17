@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 import Topbar from "../shared/Topbar";
 import Sidebar, { SidebarItemConfig } from "../shared/Sidebar";
 
-type Role = "Doctor" | "Patient";
+type Role = "Doktor" | "Hasta";
 
 interface DashboardLayoutProps {
   role: Role;

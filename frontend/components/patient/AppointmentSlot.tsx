@@ -35,9 +35,9 @@ const statusBadgeColor = {
 };
 
 const statusLabel = {
-  available: "Available",
-  booked: "Booked",
-  waiting: "Waiting List",
+  available: "Müsait",
+  booked: "Dolu",
+  waiting: "Bekleme Listesi",
 };
 
 const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
@@ -112,7 +112,7 @@ const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Book Appointment"
+        title="Randevu Al"
         size="md"
       >
         <div className="space-y-4">
@@ -133,21 +133,21 @@ const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
 
           <div className="grid gap-3">
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Date</span>
+              <span className="text-sm font-medium text-slate-600">Tarih</span>
               <span className="font-semibold text-slate-900">{date}</span>
             </div>
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Time</span>
+              <span className="text-sm font-medium text-slate-600">Saat</span>
               <span className="font-semibold text-slate-900">{time}</span>
             </div>
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Available Slots</span>
+              <span className="text-sm font-medium text-slate-600">Müsait Slot</span>
               <span className="font-semibold text-slate-900">{capacity - booked} / {capacity}</span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-600">Booking Progress</label>
+            <label className="text-sm font-medium text-slate-600">Doluluk Oranı</label>
             <ProgressBar 
               percentage={bookedPercentage} 
               size="lg" 
@@ -159,7 +159,7 @@ const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
           {status === "available" && (
             <div className="rounded-xl bg-emerald-50 p-3 ring-1 ring-emerald-100">
               <p className="text-sm text-emerald-700">
-                ✓ This appointment slot is available. Click below to book.
+                ✓ Bu randevu slotu müsait. Rezervasyon yapmak için aşağıya tıklayın.
               </p>
             </div>
           )}
@@ -167,7 +167,7 @@ const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
           {status === "booked" && (
             <div className="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
               <p className="text-sm text-slate-700">
-                This slot is fully booked. You can join the waiting list.
+                Bu slot tamamen dolu. Bekleme listesine katılabilirsiniz.
               </p>
             </div>
           )}
@@ -175,7 +175,7 @@ const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
           {status === "waiting" && (
             <div className="rounded-xl bg-amber-50 p-3 ring-1 ring-amber-100">
               <p className="text-sm text-amber-700">
-                This slot has a waiting list. You will be notified if a spot opens.
+                Bu slotun bekleme listesi var. Bir yer boşalırsa bilgilendirileceksiniz.
               </p>
             </div>
           )}
@@ -184,39 +184,39 @@ const AppointmentSlot: React.FC<AppointmentSlotProps> = ({ slot }) => {
             {status === "available" && (
               <>
                 <button className="flex-1 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
-                  Book Appointment
+                  Randevu Al
                 </button>
                 <button 
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-50"
                 >
-                  Cancel
+                  İptal
                 </button>
               </>
             )}
             {status === "booked" && (
               <>
                 <button className="flex-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
-                  Join Waiting List
+                  Bekleme Listesine Katıl
                 </button>
                 <button 
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-50"
                 >
-                  Cancel
+                  İptal
                 </button>
               </>
             )}
             {status === "waiting" && (
               <>
                 <button className="flex-1 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
-                  Join Waiting List
+                  Bekleme Listesine Katıl
                 </button>
                 <button 
                   onClick={() => setIsModalOpen(false)}
                   className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-50"
                 >
-                  Cancel
+                  İptal
                 </button>
               </>
             )}

@@ -71,7 +71,7 @@ const CalendarSlot: React.FC<CalendarSlotProps> = ({ slot, doctorName, roomName 
               {note && <p className="text-xs text-slate-500">{note}</p>}
             </div>
             <StatusBadge 
-              label={status === "waiting" ? "Waiting" : status === "booked" ? "Booked" : "Available"} 
+              label={status === "waiting" ? "Beklemede" : status === "booked" ? "Dolu" : "Müsait"} 
               tone={badgeTone[status]} 
             />
           </div>
@@ -99,7 +99,7 @@ const CalendarSlot: React.FC<CalendarSlotProps> = ({ slot, doctorName, roomName 
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Slot Details"
+        title="Slot Detayları"
         size="md"
       >
         <div className="space-y-4">
@@ -110,7 +110,7 @@ const CalendarSlot: React.FC<CalendarSlotProps> = ({ slot, doctorName, roomName 
                 <p className="text-sm text-slate-600">{finalDoctor} · {finalRoom}</p>
               </div>
               <StatusBadge 
-                label={status === "waiting" ? "Waiting" : status === "booked" ? "Booked" : "Available"} 
+                label={status === "waiting" ? "Beklemede" : status === "booked" ? "Dolu" : "Müsait"} 
                 tone={badgeTone[status]}
                 size="md"
               />
@@ -119,23 +119,23 @@ const CalendarSlot: React.FC<CalendarSlotProps> = ({ slot, doctorName, roomName 
 
           <div className="grid gap-3">
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Time</span>
+              <span className="text-sm font-medium text-slate-600">Saat</span>
               <span className="font-semibold text-slate-900">{slot.time}</span>
             </div>
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Capacity</span>
+              <span className="text-sm font-medium text-slate-600">Kapasite</span>
               <span className="font-semibold text-slate-900">{booked} / {capacity}</span>
             </div>
             {waitingList > 0 && (
               <div className="flex items-center justify-between rounded-xl bg-amber-50 p-3 ring-1 ring-amber-100">
-                <span className="text-sm font-medium text-amber-700">Waiting List</span>
-                <span className="font-semibold text-amber-900">{waitingList} patients</span>
+                <span className="text-sm font-medium text-amber-700">Bekleme Listesi</span>
+                <span className="font-semibold text-amber-900">{waitingList} hasta</span>
               </div>
             )}
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-600">Booking Progress</label>
+            <label className="text-sm font-medium text-slate-600">Doluluk Oranı</label>
             <ProgressBar 
               percentage={bookedPercentage} 
               size="lg" 
@@ -147,20 +147,20 @@ const CalendarSlot: React.FC<CalendarSlotProps> = ({ slot, doctorName, roomName 
           {note && (
             <div className="rounded-xl bg-sky-50 p-3 ring-1 ring-sky-100">
               <p className="text-sm text-slate-700">
-                <span className="font-semibold text-sky-700">Note:</span> {note}
+                <span className="font-semibold text-sky-700">Not:</span> {note}
               </p>
             </div>
           )}
 
           <div className="flex gap-2 pt-2">
             <button className="flex-1 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
-              View Details
+              Detayları Gör
             </button>
             <button 
               onClick={() => setIsModalOpen(false)}
               className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-50"
             >
-              Close
+              Kapat
             </button>
           </div>
         </div>

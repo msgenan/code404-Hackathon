@@ -24,9 +24,9 @@ const statusTone: Record<AppointmentStatus, Parameters<typeof StatusBadge>[0]["t
 };
 
 const statusLabel: Record<AppointmentStatus, string> = {
-  upcoming: "Upcoming",
-  completed: "Completed",
-  cancelled: "Cancelled",
+  upcoming: "Gelecek",
+  completed: "Tamamlandı",
+  cancelled: "İptal Edildi",
 };
 
 interface AppointmentCardProps {
@@ -70,7 +70,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title="Appointment Details"
+        title="Randevu Detayları"
         size="md"
       >
         <div className="space-y-4">
@@ -91,11 +91,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
 
           <div className="grid gap-3">
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Date & Time</span>
+              <span className="text-sm font-medium text-slate-600">Tarih & Saat</span>
               <span className="font-semibold text-slate-900">{item.datetime}</span>
             </div>
             <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
-              <span className="text-sm font-medium text-slate-600">Status</span>
+              <span className="text-sm font-medium text-slate-600">Durum</span>
               <span className="font-semibold text-slate-900">{statusLabel[item.status]}</span>
             </div>
           </div>
@@ -103,7 +103,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
           {item.note && (
             <div className="rounded-xl bg-sky-50 p-3 ring-1 ring-sky-100">
               <p className="text-sm text-slate-700">
-                <span className="font-semibold text-sky-700">Note:</span> {item.note}
+                <span className="font-semibold text-sky-700">Not:</span> {item.note}
               </p>
             </div>
           )}
@@ -111,7 +111,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
           {item.status === "upcoming" && (
             <div className="rounded-xl bg-emerald-50 p-3 ring-1 ring-emerald-100">
               <p className="text-sm text-emerald-700">
-                ✓ Your appointment is confirmed. Please arrive 10 minutes early.
+                ✓ Randevunuz onaylandı. Lütfen 10 dakika önce gelin.
               </p>
             </div>
           )}
@@ -119,7 +119,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
           {item.status === "completed" && (
             <div className="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-200">
               <p className="text-sm text-slate-700">
-                This appointment has been completed. Thank you for visiting.
+                Bu randevu tamamlandı. Ziyaretiniz için teşekkür ederiz.
               </p>
             </div>
           )}
@@ -127,7 +127,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
           {item.status === "cancelled" && (
             <div className="rounded-xl bg-rose-50 p-3 ring-1 ring-rose-100">
               <p className="text-sm text-rose-700">
-                This appointment has been cancelled.
+                Bu randevu iptal edildi.
               </p>
             </div>
           )}
@@ -136,10 +136,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
             {item.status === "upcoming" && (
               <>
                 <button className="flex-1 rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
-                  Reschedule
+                  Yeniden Planla
                 </button>
                 <button className="flex-1 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 font-semibold text-rose-700 transition-all hover:bg-rose-100">
-                  Cancel
+                  İptal Et
                 </button>
               </>
             )}
@@ -148,12 +148,12 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ item }) => {
                 onClick={() => setIsModalOpen(false)}
                 className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-700 transition-all hover:bg-slate-50"
               >
-                Close
+                Kapat
               </button>
             )}
             {item.status === "cancelled" && (
               <button className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-emerald-500 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl">
-                Rebook Appointment
+                Yeniden Randevu Al
               </button>
             )}
           </div>

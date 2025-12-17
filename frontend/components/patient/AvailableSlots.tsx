@@ -7,21 +7,21 @@ interface AvailableSlotsProps {
   slots: AppointmentSlotData[];
 }
 
-const AvailableSlots: React.FC<AvailableSlotsProps> = ({ title = "Available Appointments", slots }) => {
+const AvailableSlots: React.FC<AvailableSlotsProps> = ({ title = "Müsait Randevular", slots }) => {
   const isEmpty = slots.length === 0;
 
   return (
     <div className="rounded-3xl bg-white p-5 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
       <div className="flex flex-col gap-2 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Patient · Browse</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Hasta · Randevu Al</p>
           <h3 className="text-xl font-bold text-slate-900">{title}</h3>
-          <p className="text-sm text-slate-600">Click any slot to book, join waiting list, or view details.</p>
+          <p className="text-sm text-slate-600">Randevu almak için bir slota tıklayın</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <StatusBadge label="Available" tone="emerald" />
-          <StatusBadge label="Booked" tone="slate" />
-          <StatusBadge label="Waiting" tone="amber" />
+          <StatusBadge label="Müsait" tone="emerald" />
+          <StatusBadge label="Dolu" tone="slate" />
+          <StatusBadge label="Bekleme" tone="amber" />
         </div>
       </div>
 
@@ -32,8 +32,8 @@ const AvailableSlots: React.FC<AvailableSlotsProps> = ({ title = "Available Appo
               <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <p>No appointments available.</p>
-          <p className="text-xs text-slate-500">Check back later for new slots.</p>
+          <p>Müsait randevu yok.</p>
+          <p className="text-xs text-slate-500">Yeni slotlar için daha sonra tekrar kontrol edin.</p>
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

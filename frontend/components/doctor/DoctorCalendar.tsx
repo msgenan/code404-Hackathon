@@ -9,9 +9,9 @@ interface DoctorCalendarProps {
 }
 
 const legend = [
-  { label: "Available", tone: "emerald" as const },
-  { label: "Booked", tone: "slate" as const },
-  { label: "Waiting", tone: "amber" as const },
+  { label: "Müsait", tone: "emerald" as const },
+  { label: "Dolu", tone: "slate" as const },
+  { label: "Beklemede", tone: "amber" as const },
 ];
 
 const DoctorCalendar: React.FC<DoctorCalendarProps> = ({ timeSlots, rows }) => {
@@ -20,9 +20,9 @@ const DoctorCalendar: React.FC<DoctorCalendarProps> = ({ timeSlots, rows }) => {
     <div className="rounded-3xl bg-white p-5 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
       <div className="flex flex-col gap-3 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Doctor / Room Calendar</p>
-          <h3 className="text-xl font-bold text-slate-900">Today's coverage</h3>
-          <p className="text-sm text-slate-600">Hover cells to inspect; UI only, no live data.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Doktor / Oda Takvimi</p>
+          <h3 className="text-xl font-bold text-slate-900">Bugünkü Program</h3>
+          <p className="text-sm text-slate-600">Hücrelerin üzerine gelerek detayları görüntüleyin</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {legend.map((item) => (

@@ -2,7 +2,7 @@
 
 import React from "react";
 
-type Role = "Doctor" | "Patient";
+type Role = "Doktor" | "Hasta";
 
 interface TopbarProps {
   appName: string;
@@ -13,8 +13,8 @@ interface TopbarProps {
 }
 
 const roleBadgeStyles: Record<Role, string> = {
-  Doctor: "bg-sky-50 text-sky-700 ring-sky-200",
-  Patient: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  Doktor: "bg-sky-50 text-sky-700 ring-sky-200",
+  Hasta: "bg-emerald-50 text-emerald-700 ring-emerald-200",
 };
 
 const Topbar: React.FC<TopbarProps> = ({
@@ -52,7 +52,7 @@ const Topbar: React.FC<TopbarProps> = ({
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">{appName}</p>
-          <p className="text-sm text-slate-500">{subtitle}</p>
+          <p className="text-sm text-slate-500">Akıllı Klinik Platformu</p>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ const Topbar: React.FC<TopbarProps> = ({
             onClick={onLogout}
             className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
           >
-            Logout
+            Çıkış
           </button>
         </div>
       </div>

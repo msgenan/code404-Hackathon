@@ -3,7 +3,7 @@
 import React from "react";
 import SidebarItem from "./SidebarItem";
 
-type Role = "Doctor" | "Patient";
+type Role = "Doktor" | "Hasta";
 
 export interface SidebarItemConfig {
   key: string;
@@ -19,13 +19,15 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ items, activeItem, onSelect, role }) => {
+  const modeText = role === "Doktor" ? "Doktor Modu" : "Hasta Modu";
+  
   return (
     <aside className="hidden min-h-screen w-[260px] shrink-0 flex-col justify-between border-r border-slate-100 bg-white/80 px-4 py-6 shadow-lg shadow-slate-100 ring-1 ring-slate-100 backdrop-blur lg:flex">
       <div className="space-y-5">
         <div className="rounded-2xl bg-gradient-to-r from-sky-500/90 to-emerald-500/90 px-4 py-4 text-white shadow-lg shadow-sky-100">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] opacity-90">{role} Mode</p>
-          <p className="text-lg font-bold">Navigation</p>
-          <p className="text-sm opacity-90">Stay in sync with your day.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] opacity-90">{modeText}</p>
+          <p className="text-lg font-bold">Navigasyon</p>
+          <p className="text-sm opacity-90">Gününüze göz atın</p>
         </div>
 
         <div className="space-y-2">
@@ -42,8 +44,8 @@ const Sidebar: React.FC<SidebarProps> = ({ items, activeItem, onSelect, role }) 
       </div>
 
       <div className="rounded-2xl bg-slate-50 px-4 py-3 text-xs text-slate-500 ring-1 ring-slate-100">
-        <p className="font-semibold text-slate-700">Need help?</p>
-        <p>Chat with support or review onboarding in a minute.</p>
+        <p className="font-semibold text-slate-700">Yardıma mı ihtiyacınız var?</p>
+        <p>Destek ekibiyle görüşün veya yardım alın.</p>
       </div>
     </aside>
   );

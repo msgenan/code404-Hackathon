@@ -27,7 +27,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({ rows, timeSlots }) => {
     <div className="overflow-x-auto">
       <div className="min-w-[780px]">
         <div className={`grid ${columnClass} gap-3 text-sm font-semibold text-slate-600`}>
-          <div className="rounded-xl bg-slate-50 px-3 py-2 ring-1 ring-slate-100">Rooms</div>
+          <div className="rounded-xl bg-slate-50 px-3 py-2 ring-1 ring-slate-100">Odalar</div>
           {timeSlots.map((slot) => (
             <div key={slot} className="rounded-xl bg-slate-50 px-3 py-2 text-center ring-1 ring-slate-100">
               {slot}
