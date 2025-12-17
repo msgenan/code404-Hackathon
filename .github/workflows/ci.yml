@@ -213,6 +213,10 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose version
       
+      - name: Clean up old containers and volumes
+        run: |
+          docker-compose down -v || true
+      
       - name: Run docker-compose
         run: |
           docker-compose up -d
