@@ -1,5 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import { api } from "@/lib/api";
 
 export interface RegisterFormProps {
   onSwitchToLogin?: () => void;
@@ -28,22 +29,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
     setSuccess("");
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          full_name: fullName,
-        }),
+      await api.register({
+        email,
+        password,
+        full_name: fullName,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Kayıt başarısız");
-      }
-
-      setSuccess("Kayıt başarılı! Giriş yapabilirsiniz.");
+      setSuccess("Registration successful! You can now login.");
       setFullName("");
       setEmail("");
       setPassword("");
@@ -52,7 +44,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         if (onSwitchToLogin) onSwitchToLogin();
       }, 1500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Bir hata oluştu");
+      console.error("Registration error:", err);
+      setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
       setLoading(false);
     }
