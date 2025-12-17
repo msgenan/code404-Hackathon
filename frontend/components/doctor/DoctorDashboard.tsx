@@ -27,18 +27,6 @@ const doctorNav: SidebarItemConfig[] = [
     ),
   },
   {
-    key: "calendar",
-    label: "Calendar",
-    icon: (
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <path d="M7 3v4" />
-        <path d="M17 3v4" />
-        <rect x="4" y="5" width="16" height="16" rx="2" />
-        <path d="M3 11h18" />
-      </svg>
-    ),
-  },
-  {
     key: "waiting",
     label: "Waiting List",
     icon: (
@@ -98,44 +86,46 @@ const DoctorDashboard: React.FC = () => {
     >
       {activeMenu === "dashboard" && (
         <>
-          <section className="grid gap-4 md:grid-cols-3">
+          <section className="grid gap-5 md:grid-cols-3 mb-6">
             {summaryCards.map((card) => (
               <div
                 key={card.label}
-                className={`rounded-2xl px-5 py-4 shadow-md shadow-sky-50 transition hover:-translate-y-0.5 hover:shadow-lg ${toneStyles[card.tone]}`}
+                className={`rounded-2xl px-6 py-5 shadow-lg shadow-sky-100/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl ${toneStyles[card.tone]}`}
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-600">{card.label}</p>
-                <p className="text-2xl font-bold leading-tight">{card.value}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-600 mb-2">{card.label}</p>
+                <p className="text-3xl font-bold leading-tight mb-1">{card.value}</p>
                 <p className="text-sm text-slate-600">{card.hint}</p>
               </div>
             ))}
           </section>
 
-          <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />
+          <div className="mb-6">
+            <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />
+          </div>
 
-          <section className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
-              <div className="flex items-center justify-between pb-3">
+          <section className="grid gap-5 md:grid-cols-2">
+            <div className="rounded-3xl bg-white p-6 shadow-xl shadow-sky-100/50 ring-1 ring-slate-100 hover:shadow-2xl transition-shadow duration-200">
+              <div className="flex items-center justify-between pb-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Waiting List</p>
-                  <h4 className="text-lg font-bold text-slate-900">Priority patients</h4>
+                  <h4 className="text-xl font-bold text-slate-900">Priority patients</h4>
                 </div>
-                <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 ring-1 ring-slate-100">Live</span>
+                <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-200">Live</span>
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {["Aziz Karim · Chest pain", "Leila Aydin · Post-op check", "Marcus Lee · Lab review"].map((item) => (
                   <li
                     key={item}
-                    className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 ring-1 ring-slate-100"
+                    className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-slate-50 to-slate-50/50 px-5 py-3.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-100 hover:ring-sky-200 transition-all duration-150"
                   >
                     <span>{item}</span>
-                    <span className="text-xs text-slate-500">ETA 8m</span>
+                    <span className="text-xs font-medium text-slate-500">ETA 8m</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
+            <div className="rounded-3xl bg-white p-6 shadow-xl shadow-sky-100/50 ring-1 ring-slate-100 hover:shadow-2xl transition-shadow duration-200">
               <div className="flex items-center justify-between pb-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">Pager Chat</p>
@@ -153,7 +143,7 @@ const DoctorDashboard: React.FC = () => {
                     <span className="text-xs text-slate-500">Just now</span>
                   </div>
                 ))}
-                <p className="rounded-2xl bg-white px-4 py-3 text-xs text-slate-500 ring-1 ring-dashed ring-slate-200">
+                <p className="rounded-2xl bg-sky-50/50 px-5 py-3.5 text-xs text-slate-600 ring-1 ring-dashed ring-sky-200">
                   Connect to real-time messaging to sync pager threads.
                 </p>
               </div>
@@ -161,8 +151,6 @@ const DoctorDashboard: React.FC = () => {
           </section>
         </>
       )}
-
-      {activeMenu === "calendar" && <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />}
 
       {activeMenu === "waiting" && (
         <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
