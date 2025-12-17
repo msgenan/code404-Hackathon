@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import List
 
 import redis
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -80,7 +79,7 @@ async def create_appointment(
     return new_appointment
 
 
-@router.get("/my", response_model=List[AppointmentRead])
+@router.get("/my", response_model=list[AppointmentRead])
 async def get_my_appointments(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session),

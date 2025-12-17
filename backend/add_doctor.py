@@ -6,10 +6,12 @@ Bu script doktorları manuel olarak veritabanına eklemek için kullanılır.
 
 import sys
 from getpass import getpass
+
 from sqlmodel import Session, select
+
+from app.auth import hash_password
 from app.database import engine
 from app.models import User, UserRole
-from app.auth import hash_password
 
 
 def add_doctor():
@@ -18,7 +20,7 @@ def add_doctor():
     print("DOKTOR EKLEME SİSTEMİ")
     print("=" * 50)
     print()
-    
+
     # Doktor bilgilerini al
     full_name = input("Doktor Adı Soyadı: ").strip()
     if not full_name:
@@ -45,10 +47,10 @@ def add_doctor():
     print("Doktor bilgileri:")
     print(f"  Ad Soyad: {full_name}")
     print(f"  Email: {email}")
-    print(f"  Rol: Doktor")
+    print("  Rol: Doktor")
     print("=" * 50)
     print()
-    
+
     confirm = input("Bu bilgilerle doktor eklensin mi? (E/H): ").strip().upper()
     if confirm != "E":
         print("❌ İptal edildi.")
@@ -64,7 +66,7 @@ def add_doctor():
             if existing_user:
                 print(f"❌ Hata: {email} adresi zaten kayıtlı!")
                 sys.exit(1)
-            
+
             # Yeni doktor oluştur
             new_doctor = User(
                 email=email,
@@ -72,11 +74,11 @@ def add_doctor():
                 role=UserRole.doctor,
                 full_name=full_name
             )
-            
+
             session.add(new_doctor)
             session.commit()
             session.refresh(new_doctor)
-            
+
             print()
             print("✅ Başarılı!")
             print(f"   Doktor ID: {new_doctor.id}")
@@ -96,13 +98,13 @@ def list_doctors():
     print("KAYITLI DOKTORLAR")
     print("=" * 50)
     print()
-    
+
     try:
         with Session(engine) as session:
             doctors = session.exec(
                 select(User).where(User.role == UserRole.doctor)
             ).all()
-            
+
             if not doctors:
                 print("Henüz kayıtlı doktor yok.")
             else:

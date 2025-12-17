@@ -1,7 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
-from app.auth import authenticate_user, create_access_token, hash_password, get_current_user
+from app.auth import (
+    authenticate_user,
+    create_access_token,
+    get_current_user,
+    hash_password,
+)
 from app.database import get_session
 from app.models import Token, User, UserCreate, UserLogin, UserRead, UserRole
 

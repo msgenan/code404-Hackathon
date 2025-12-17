@@ -1,6 +1,5 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
-from typing import List, Optional
 
 from pydantic import EmailStr, validator
 from sqlmodel import Field, Relationship, SQLModel
@@ -24,23 +23,23 @@ class User(SQLModel, table=True):
 
     __tablename__ = "users"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     email: str = Field(unique=True, index=True)
     password_hash: str
     role: UserRole = Field(default=UserRole.patient)
     full_name: str
-    phone: Optional[str] = Field(default=None)
-    age: Optional[int] = Field(default=None)
-    gender: Optional[str] = Field(default=None)
-    department: Optional[str] = Field(default=None)  # For doctors
-    medical_history: Optional[str] = Field(default=None)  # For patients
-    allergies: Optional[str] = Field(default=None)  # For patients
+    phone: str | None = Field(default=None)
+    age: int | None = Field(default=None)
+    gender: str | None = Field(default=None)
+    department: str | None = Field(default=None)  # For doctors
+    medical_history: str | None = Field(default=None)  # For patients
+    allergies: str | None = Field(default=None)  # For patients
 
-    appointments_as_doctor: List["Appointment"] = Relationship(
+    appointments_as_doctor: list["Appointment"] = Relationship(
         back_populates="doctor",
         sa_relationship_kwargs={"foreign_keys": "Appointment.doctor_id"},
     )
-    appointments_as_patient: List["Appointment"] = Relationship(
+    appointments_as_patient: list["Appointment"] = Relationship(
         back_populates="patient",
         sa_relationship_kwargs={"foreign_keys": "Appointment.patient_id"},
     )
@@ -51,19 +50,19 @@ class Appointment(SQLModel, table=True):
 
     __tablename__ = "appointments"
 
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     doctor_id: int = Field(foreign_key="users.id")
     patient_id: int = Field(foreign_key="users.id")
     start_time: datetime
     status: AppointmentStatus = Field(default=AppointmentStatus.active)
-    appointment_type: Optional[str] = Field(default="Consultation")
-    notes: Optional[str] = Field(default=None)
+    appointment_type: str | None = Field(default="Consultation")
+    notes: str | None = Field(default=None)
 
-    doctor: Optional[User] = Relationship(
+    doctor: User | None = Relationship(
         back_populates="appointments_as_doctor",
         sa_relationship_kwargs={"foreign_keys": "[Appointment.doctor_id]"},
     )
-    patient: Optional[User] = Relationship(
+    patient: User | None = Relationship(
         back_populates="appointments_as_patient",
         sa_relationship_kwargs={"foreign_keys": "[Appointment.patient_id]"},
     )
@@ -135,12 +134,12 @@ class UserRead(UserBase):
 
     id: int
     role: UserRole
-    phone: Optional[str] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    department: Optional[str] = None
-    medical_history: Optional[str] = None
-    allergies: Optional[str] = None
+    phone: str | None = None
+    age: int | None = None
+    gender: str | None = None
+    department: str | None = None
+    medical_history: str | None = None
+    allergies: str | None = None
 
 
 class AppointmentCreate(SQLModel):
@@ -152,8 +151,8 @@ class AppointmentCreate(SQLModel):
     @validator("start_time")
     def validate_start_time(cls, v):
         # Make both datetimes timezone-aware for comparison
-        now = datetime.now(timezone.utc)
-        appointment_time = v if v.tzinfo is not None else v.replace(tzinfo=timezone.utc)
+        now = datetime.now(UTC)
+        appointment_time = v if v.tzinfo is not None else v.replace(tzinfo=UTC)
         if appointment_time < now:
             raise ValueError("Appointment time cannot be in the past")
         return v
@@ -167,10 +166,10 @@ class AppointmentRead(SQLModel):
     patient_id: int
     start_time: datetime
     status: AppointmentStatus
-    appointment_type: Optional[str] = None
-    notes: Optional[str] = None
-    doctor: Optional[UserRead] = None
-    patient: Optional[UserRead] = None
+    appointment_type: str | None = None
+    notes: str | None = None
+    doctor: UserRead | None = None
+    patient: UserRead | None = None
 
 
 class Token(SQLModel):

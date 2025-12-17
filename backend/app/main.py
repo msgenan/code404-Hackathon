@@ -1,20 +1,20 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlmodel import Session, select
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.database import create_db_and_tables, get_session
-from app.models import User, UserRole
-from app.auth import hash_password
+from app.api.appointment_routes import router as appointment_router
 from app.api.auth_routes import router as auth_router
 from app.api.doctor_routes import router as doctor_router
-from app.api.appointment_routes import router as appointment_router
-from app.api.patient_routes import router as patient_router
 from app.api.health_routes import router as health_router
+from app.api.patient_routes import router as patient_router
 from app.api.user_routes import router as user_router
+from app.auth import hash_password
+from app.database import create_db_and_tables
+from app.models import User, UserRole
 
 app = FastAPI(
     title="Hospital Appointment Management API",
@@ -70,14 +70,15 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.on_event("startup")
 def on_startup():
     """Runs at application startup - creates database tables and adds seed data"""
-    from app.database import engine
     from datetime import datetime, timedelta
+
+    from app.database import engine
     from app.models import Appointment, AppointmentStatus
-    
+
     create_db_and_tables()
     with Session(engine) as session:
         existing_users = session.exec(select(User)).all()
-        
+
         if not existing_users:
             # Create Doctors
             doctors = [
@@ -162,10 +163,10 @@ def on_startup():
                     gender="Male"
                 ),
             ]
-            
+
             for doctor in doctors:
                 session.add(doctor)
-            
+
             # Create Patients
             patients = [
                 User(
@@ -246,15 +247,15 @@ def on_startup():
                     allergies="Aspirin"
                 ),
             ]
-            
+
             for patient in patients:
                 session.add(patient)
-            
+
             session.commit()
-            
+
             # Create sample appointments for today
             today = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0)
-            
+
             appointments = [
                 Appointment(
                     doctor_id=1,  # Dr. Sarah Chen
@@ -289,10 +290,10 @@ def on_startup():
                     status=AppointmentStatus.active
                 ),
             ]
-            
+
             for appointment in appointments:
                 session.add(appointment)
-            
+
             session.commit()
             print("✅ Seed data added: 8 Doctors, 7 Patients, 4 Appointments")
 
