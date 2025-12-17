@@ -35,13 +35,13 @@ async def register(user_data: UserCreate, session: Session = Depends(get_session
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
-        )
+        ) from e
     except Exception as e:
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An error occurred during registration: {str(e)}",
-        )
+        ) from e
 
 
 @router.post("/login", response_model=Token)

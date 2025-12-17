@@ -24,22 +24,22 @@ def add_doctor():
     if not full_name:
         print("❌ Hata: Ad soyad boş olamaz!")
         sys.exit(1)
-    
+
     email = input("Email: ").strip()
     if not email:
         print("❌ Hata: Email boş olamaz!")
         sys.exit(1)
-    
+
     password = getpass("Şifre: ")
     if len(password) < 6:
         print("❌ Hata: Şifre en az 6 karakter olmalıdır!")
         sys.exit(1)
-    
+
     password_confirm = getpass("Şifre (Tekrar): ")
     if password != password_confirm:
         print("❌ Hata: Şifreler eşleşmiyor!")
         sys.exit(1)
-    
+
     print()
     print("=" * 50)
     print("Doktor bilgileri:")
@@ -53,14 +53,14 @@ def add_doctor():
     if confirm != "E":
         print("❌ İptal edildi.")
         sys.exit(0)
-    
+
     try:
         with Session(engine) as session:
             # Email kontrolü
             existing_user = session.exec(
                 select(User).where(User.email == email)
             ).first()
-            
+
             if existing_user:
                 print(f"❌ Hata: {email} adresi zaten kayıtlı!")
                 sys.exit(1)
@@ -84,7 +84,7 @@ def add_doctor():
             print(f"   Ad Soyad: {new_doctor.full_name}")
             print()
             print("Bu bilgilerle sisteme giriş yapabilirsiniz.")
-            
+
     except Exception as e:
         print(f"❌ Hata oluştu: {str(e)}")
         sys.exit(1)
@@ -111,7 +111,7 @@ def list_doctors():
                     print(f"   Email: {doctor.email}")
                     print(f"   ID: {doctor.id}")
                     print()
-            
+
     except Exception as e:
         print(f"❌ Hata oluştu: {str(e)}")
         sys.exit(1)
