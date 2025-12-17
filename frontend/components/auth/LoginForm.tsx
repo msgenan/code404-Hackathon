@@ -24,7 +24,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       const res = await api.login({ email, password });
       console.log("Login response:", res);
       
-      const token = (res as any)?.access_token || (res as any)?.token;
+      const token = (res as { access_token?: string; token?: string })?.access_token || (res as { access_token?: string; token?: string })?.token;
       if (token) {
         saveToken(token);
         console.log("Token saved, fetching user data...");
@@ -35,7 +35,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         saveUserData(userData);
         
         // Redirect based on role
-        if ((userData as any).role === "doctor") {
+        if ((userData as { role: string }).role === "doctor") {
           window.location.href = "/doctor/dashboard";
         } else {
           window.location.href = "/user/dashboard";

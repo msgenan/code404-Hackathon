@@ -10,6 +10,7 @@ const DoctorDashboardPage: React.FC = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     const token = getToken();
     const userData = getUserData();
 
@@ -29,7 +30,13 @@ const DoctorDashboardPage: React.FC = () => {
       return;
     }
 
-    setIsAuthorized(true);
+    if (isMounted) {
+      setIsAuthorized(true);
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
   if (!isAuthorized) {
