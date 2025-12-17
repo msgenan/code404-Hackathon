@@ -106,7 +106,7 @@ jobs:
           outputs: type=docker,dest=/tmp/backend-image.tar
       
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: backend-image
           path: /tmp/backend-image.tar
@@ -173,7 +173,7 @@ jobs:
           outputs: type=docker,dest=/tmp/frontend-image.tar
       
       - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: frontend-image
           path: /tmp/frontend-image.tar
