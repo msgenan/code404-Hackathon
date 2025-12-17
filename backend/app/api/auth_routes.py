@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
-from app.auth import authenticate_user, create_access_token, hash_password
+from app.auth import authenticate_user, create_access_token, hash_password, get_current_user
 from app.database import get_session
 from app.models import Token, User, UserCreate, UserLogin, UserRead, UserRole
 
@@ -55,7 +55,13 @@ async def login(login_data: UserLogin, session: Session = Depends(get_session)):
             detail="Email veya şifre hatalı",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = create_access_token(data={"sub": user.id})
+    access_token = create_access_token(data={"sub": str(user.id)})
 
     return Token(access_token=access_token)
+
+
+@router.get("/me", response_model=UserRead)
+async def get_me(current_user: User = Depends(get_current_user)):
+    """Get current authenticated user."""
+    return current_user
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import List, Optional
 
@@ -29,6 +29,12 @@ class User(SQLModel, table=True):
     password_hash: str
     role: UserRole = Field(default=UserRole.patient)
     full_name: str
+    phone: Optional[str] = Field(default=None)
+    age: Optional[int] = Field(default=None)
+    gender: Optional[str] = Field(default=None)
+    department: Optional[str] = Field(default=None)  # For doctors
+    medical_history: Optional[str] = Field(default=None)  # For patients
+    allergies: Optional[str] = Field(default=None)  # For patients
 
     appointments_as_doctor: List["Appointment"] = Relationship(
         back_populates="doctor",
@@ -50,6 +56,8 @@ class Appointment(SQLModel, table=True):
     patient_id: int = Field(foreign_key="users.id")
     start_time: datetime
     status: AppointmentStatus = Field(default=AppointmentStatus.active)
+    appointment_type: Optional[str] = Field(default="Consultation")
+    notes: Optional[str] = Field(default=None)
 
     doctor: Optional[User] = Relationship(
         back_populates="appointments_as_doctor",
@@ -127,6 +135,12 @@ class UserRead(UserBase):
 
     id: int
     role: UserRole
+    phone: Optional[str] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    department: Optional[str] = None
+    medical_history: Optional[str] = None
+    allergies: Optional[str] = None
 
 
 class AppointmentCreate(SQLModel):
@@ -137,8 +151,11 @@ class AppointmentCreate(SQLModel):
 
     @validator("start_time")
     def validate_start_time(cls, v):
-        if v < datetime.now():
-            raise ValueError("Randevu zamanı geçmişte olamaz")
+        # Make both datetimes timezone-aware for comparison
+        now = datetime.now(timezone.utc)
+        appointment_time = v if v.tzinfo is not None else v.replace(tzinfo=timezone.utc)
+        if appointment_time < now:
+            raise ValueError("Appointment time cannot be in the past")
         return v
 
 
@@ -150,6 +167,8 @@ class AppointmentRead(SQLModel):
     patient_id: int
     start_time: datetime
     status: AppointmentStatus
+    appointment_type: Optional[str] = None
+    notes: Optional[str] = None
     doctor: Optional[UserRead] = None
     patient: Optional[UserRead] = None
 

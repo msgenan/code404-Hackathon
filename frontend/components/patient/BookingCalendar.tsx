@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { api } from "@/lib/api";
 
 interface TimeSlot {
   time: string;
@@ -10,12 +11,16 @@ interface TimeSlot {
 interface BookingCalendarProps {
   selectedDepartment: string;
   selectedDoctor: string;
+  selectedDoctorId: number;
   onBack: () => void;
+  onSuccess?: () => void;
 }
 
-const BookingCalendar = ({ selectedDepartment, selectedDoctor, onBack }: BookingCalendarProps) => {
+const BookingCalendar = ({ selectedDepartment, selectedDoctor, selectedDoctorId, onBack, onSuccess }: BookingCalendarProps) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Generate next 14 days
   const generateDates = () => {
@@ -58,10 +63,36 @@ const BookingCalendar = ({ selectedDepartment, selectedDoctor, onBack }: Booking
     return date.toLocaleDateString("en-US", { weekday: "short" });
   };
 
-  const handleBooking = () => {
-    if (selectedDate && selectedTime) {
-      alert(`Appointment booked with ${selectedDoctor} (${selectedDepartment}) on ${selectedDate} at ${selectedTime}`);
+  const handleBooking = async () => {
+    if (!selectedDate || !selectedTime) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Combine date and time into ISO string
+      const appointmentDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
+      
+      console.log("Creating appointment with:", {
+        doctor_id: selectedDoctorId,
+        start_time: appointmentDateTime.toISOString(),
+      });
+      
+      const result = await api.createAppointment({
+        doctor_id: selectedDoctorId,
+        start_time: appointmentDateTime.toISOString(),
+      });
+      
+      console.log("Appointment created successfully:", result);
+      
+      alert(`Appointment successfully booked with ${selectedDoctor} on ${appointmentDateTime.toLocaleDateString()} at ${selectedTime}`);
+      if (onSuccess) onSuccess();
       onBack();
+    } catch (err) {
+      console.error("Failed to create appointment:", err);
+      setError(err instanceof Error ? err.message : "Failed to book appointment");
+    } finally {
+      setLoading(false);
     }
   };
 

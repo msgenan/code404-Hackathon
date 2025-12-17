@@ -23,6 +23,9 @@ class ApiClient {
     const token = this.getToken();
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
+      console.log("Using auth token:", token.substring(0, 20) + "...");
+    } else {
+      console.warn("No auth token found in localStorage!");
     }
 
     return headers;
@@ -116,6 +119,35 @@ class ApiClient {
 
   async createAppointment(data: { doctor_id: number; start_time: string }) {
     return this.post("/appointments", data);
+  }
+
+  // Patient methods
+  async getWaitingList() {
+    return this.get("/patients/waiting-list");
+  }
+
+  async getPriorityPatients() {
+    return this.get("/patients/priority");
+  }
+
+  // User methods
+  async getCurrentUser() {
+    return this.get("/auth/me");
+  }
+
+  async checkProfileCompletion() {
+    return this.get("/users/profile-completion");
+  }
+
+  async updateProfile(data: {
+    full_name?: string;
+    phone?: string;
+    age?: number;
+    gender?: string;
+    medical_history?: string;
+    allergies?: string;
+  }) {
+    return this.put("/users/profile", data);
   }
 }
 

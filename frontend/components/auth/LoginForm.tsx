@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { api, saveToken } from "@/lib/api";
+import { api, saveToken, saveUserData } from "@/lib/api";
 
 export interface LoginFormProps {
   onSwitchToRegister?: () => void;
@@ -10,20 +10,45 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const disabled = !email || !password;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const disabled = !email || !password || loading;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+    
     try {
+      console.log("Attempting login with:", email);
       const res = await api.login({ email, password });
+      console.log("Login response:", res);
+      
       const token = (res as any)?.access_token || (res as any)?.token;
       if (token) {
         saveToken(token);
+        console.log("Token saved, fetching user data...");
+        
+        // Fetch user data
+        const userData = await api.getCurrentUser();
+        console.log("User data:", userData);
+        saveUserData(userData);
+        
+        // Redirect based on role
+        if ((userData as any).role === "doctor") {
+          window.location.href = "/doctor/dashboard";
+        } else {
+          window.location.href = "/user/dashboard";
+        }
+      } else {
+        throw new Error("No token received from server");
       }
-      window.location.href = "/dashboard";
     } catch (err) {
-      console.error("Login failed", err);
-      alert(err instanceof Error ? err.message : "Login failed");
+      console.error("Login failed:", err);
+      const errorMessage = err instanceof Error ? err.message : "Login failed";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,13 +94,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         </div>
       </div>
 
+      {error && (
+        <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      )}
+
       <div>
         <button
           type="submit"
           disabled={disabled}
           className="w-full py-2 rounded-lg bg-sky-600 text-white font-medium hover:bg-sky-700 disabled:opacity-60 transition"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </div>
 
