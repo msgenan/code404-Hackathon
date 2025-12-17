@@ -1,167 +1,121 @@
-# Smart Appointment System - Code404
+# 🏥 Hospital Appointment System
 
-[![CI Pipeline](https://github.com/msgenan/code404-Hackathon/actions/workflows/ci.yml/badge.svg)](https://github.com/msgenan/code404-Hackathon/actions/workflows/ci.yml)
+Modern hastane randevu yönetim sistemi. Mikroservis mimarisinde geliştirilmiş, production-ready bir uygulama.
 
-Akıllı randevu ve kuyruk yönetim sistemi. Docker containerları ile microservice mimarisinde geliştirilmiş, Nginx reverse proxy ile güvenli erişim sağlanan modern bir web uygulaması.
-
-## 🏗️ Sistem Mimarisi
-
-```
-Client → Nginx (Port 80) → Backend API (FastAPI) → PostgreSQL
-                         ↘ Frontend (Next.js)    → Redis (Cache)
-```
-
-**Teknolojiler:**
-- **Frontend:** Next.js 15 (React 19) - Modern UI framework
-- **Backend:** FastAPI (Python 3.12) - High-performance API
-- **Database:** PostgreSQL 16 - İlişkisel veritabanı
-- **Cache:** Redis 7 - Önbellekleme ve oturum yönetimi
-- **Proxy:** Nginx - Reverse proxy ve load balancing
-- **Infrastructure:** Docker Compose + Kubernetes
-
-## 🚀 Hızlı Başlangıç
-
-### Gereksinimler
-- Docker Desktop (çalışır durumda)
-- Git
-
-### Kurulum
+## ⚡ Hızlı Başlangıç
 
 ```bash
-# 1. Projeyi klonlayın
 git clone https://github.com/msgenan/code404-Hackathon.git
 cd code404-Hackathon
-
-# 2. Ortam değişkenlerini ayarlayın
-cp .env.example .env
-
-# 3. Tüm servisleri başlatın
 docker-compose up --build
 ```
 
-### Uygulamaya Erişim
+**Uygulamaya eriş:** http://localhost
 
-Tüm servisler Nginx reverse proxy üzerinden erişilebilir:
+## 🎯 Özellikler
 
-- **Frontend:** http://localhost
-- **Backend API:** http://localhost/api/health
-- **API Docs:** http://localhost/docs
+- **Kullanıcı Yönetimi:** Hasta, doktor ve admin rolleri
+- **Randevu Sistemi:** Randevu oluşturma, görüntüleme, iptal etme
+- **Öncelikli Kuyruk:** Yaş ve sağlık durumuna göre otomatik sıralama
+- **Gerçek Zamanlı:** Anlık randevu güncellemeleri
+- **Güvenlik:** JWT authentication, role-based access control
 
-> **Güvenlik:** Servisler sadece Nginx üzerinden expose edilmiştir. Direkt port erişimi kapalıdır.
+## 🛠️ Teknoloji Stack
 
-## 👥 Kullanıcı Yönetimi
+**Backend:**
+- FastAPI (Python 3.12)
+- PostgreSQL 16
+- SQLModel ORM
+- JWT Authentication
+- Prometheus metrikleri
 
-### Varsayılan Kullanıcılar
+**Frontend:**
+- Next.js 15 + React 19
+- TypeScript
+- Tailwind CSS
+- Server-side rendering
 
-Sistem ilk başlatıldığında otomatik olarak oluşturulur:
+**Infrastructure:**
+- Docker Compose
+- Kubernetes (production)
+- Nginx reverse proxy
+- Redis cache
 
-**Doktor:**
-- Email: `doktor@hospital.com`
-- Şifre: `doktor123`
+## 📚 API Endpoints
 
-**Hasta:**
-- Email: `hasta@hospital.com`
-- Şifre: `hasta123`
+- `GET /health` - Sistem sağlık kontrolü
+- `POST /auth/register` - Kullanıcı kaydı
+- `POST /auth/login` - Giriş yapma
+- `GET /doctors` - Doktor listesi
+- `POST /appointments` - Randevu oluşturma
+- `GET /patients/priority` - Öncelikli hasta kuyruğu
 
-### Yeni Doktor Ekleme
+**API Dokümantasyonu:** http://localhost/docs
+
+## 👥 Test Kullanıcıları
+
+Uygulamada hazır test hesapları bulunur:
+
+| Role | Email | Şifre |
+|------|-------|-------|
+| Doktor | sarah.chen@hospital.com | Doctor123! |
+| Doktor | michael.roberts@hospital.com | Doctor123! |
+| Hasta | john.smith@email.com | Patient123! |
+
+## 🔧 Faydalı Komutlar
 
 ```bash
-docker-compose exec backend python add_doctor.py
-```
-
-### Yeni Hasta Kaydı
-
-Hastalar web arayüzünden kayıt olabilir:
-1. http://localhost adresine gidin
-2. "Register" sekmesine tıklayın
-3. Formu doldurun ve "Create account" butonuna tıklayın
-
-## 🛠️ Geliştirme
-
-```bash
-# Logları görüntüle
+# Logları izle
 docker-compose logs -f
 
-# Tüm servisleri durdur
-docker-compose down
+# Servisi yeniden başlat
+docker-compose restart backend
 
-# Servisleri yeniden başlat
-docker-compose restart
-
-# Tek bir servisi rebuild et
-docker-compose up --build backend
-```
-
-## 🧪 Test
-
-```bash
-# Backend testleri
-docker-compose exec backend pytest
-
-# Frontend testleri
-docker-compose exec frontend npm test
-```
-
-## 📦 Veritabanı Yedekleme
-
-```bash
-# Manuel yedekleme
+# Veritabanını yedekle
 ./scripts/backup_db.sh
 
-# Yedekler backups/ klasörüne kaydedilir
+# Veritabanını sıfırla
+./scripts/reset_database.sh
+
+# Test et
+docker-compose exec backend pytest
 ```
 
-## ☸️ Kubernetes Deployment
+## 📁 Proje Yapısı
 
-Kubernetes ortamına deploy etmek için:
+```
+├── backend/          # FastAPI backend
+│   ├── app/
+│   │   ├── api/      # API endpoints
+│   │   ├── models.py # Database models
+│   │   └── auth.py   # Authentication
+│   └── tests/        # Backend tests
+├── frontend/         # Next.js frontend
+│   ├── app/          # Pages
+│   └── components/   # React components
+├── infrastructure/
+│   └── k8s/          # Kubernetes configs
+└── nginx/            # Reverse proxy config
+```
+
+## 🚀 Production Deploy
+
+Kubernetes ile production deploy:
 
 ```bash
-# Namespace oluştur
-kubectl apply -f infrastructure/k8s/00-namespace.yaml
-
-# Secret'ları yapılandır
-kubectl create secret generic app-secrets \
-  --from-literal=POSTGRES_USER=your_user \
-  --from-literal=POSTGRES_PASSWORD=your_password \
-  -n appointment-system
-
-# Tüm kaynakları deploy et
 kubectl apply -f infrastructure/k8s/
 ```
 
-Detaylı bilgi için: [Kubernetes Deployment Guide](./infrastructure/k8s/README.md)
+Detaylı bilgi: `infrastructure/k8s/README.md`
 
-## 🔧 Sorun Giderme
+## 💡 Önemli Notlar
 
-### Port Kullanımda Hatası
+- Tüm servisler Nginx üzerinden çalışır (güvenlik)
+- Test hesapları otomatik oluşturulur
+- JWT token ile authentication
+- Role-based access control (admin, doctor, patient)
+- Production'da `.env` dosyasındaki secret'lar güncellenmeli
 
-```bash
-# Port 80'i kullanan işlemi bul
-sudo lsof -i :80
+---
 
-# Docker servisleri durdur
-docker-compose down
-```
-
-### BuildKit DNS Hatası
-
-```bash
-# BuildKit'i devre dışı bırak
-DOCKER_BUILDKIT=0 docker-compose up --build
-```
-
-### .env Dosyası Eksik
-
-```bash
-cp .env.example .env
-```
-
-## 📝 Notlar
-
-- Production ortamında `.env` dosyasındaki `SECRET_KEY` mutlaka değiştirilmelidir
-- PostgreSQL ve Redis şifreleri güçlü şifreler ile değiştirilmelidir
-- Nginx üzerinden erişim zorunludur, direkt servis erişimi güvenlik nedeniyle kapatılmıştır
-
-## 📄 Lisans
-
-Bu proje hackathon için geliştirilmiştir.
+**Geliştirici:** [@msgenan](https://github.com/msgenan) | **Proje:** Code404 Hackathon
