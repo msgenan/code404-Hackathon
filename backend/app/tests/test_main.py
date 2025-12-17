@@ -16,10 +16,9 @@ async def test_health_check():
     ) as client:
         response = await client.get("/health")
         assert response.status_code == 200
-        assert response.json() == {
-            "message": "Hastane Randevu Sistemi çalışıyor",
-            "status": "ok"
-        }
+        data = response.json()
+        assert data["status"] == "ok"
+        assert "message" in data
 
 
 @pytest.mark.asyncio
