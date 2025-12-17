@@ -1,5 +1,9 @@
 # Smart Appointment System - Code404
 
+[![CI/CD Pipeline](https://github.com/msgenan/code404-Hackathon/actions/workflows/ci.yml/badge.svg)](https://github.com/msgenan/code404-Hackathon/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/msgenan/code404-Hackathon/branch/main/graph/badge.svg)](https://codecov.io/gh/msgenan/code404-Hackathon)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Akıllı randevu ve kuyruk yönetim sistemi. Docker containerları ile microservice mimarisinde geliştirilmiş, Nginx reverse proxy ile güvenli erişim sağlanan modern bir web uygulaması.
 
 ## 🏗️ Sistem Mimarisi
