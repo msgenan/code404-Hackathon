@@ -71,36 +71,30 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 def on_startup():
     """Runs at application startup - creates database tables and adds seed data"""
     from app.database import engine
+    from sqlalchemy.dialects.postgresql import insert
 
     create_db_and_tables()
     with Session(engine) as session:
-        # Check if doctor already exists to avoid duplicate key error
-        existing_doctor = session.exec(
-            select(User).where(User.email == "doCtor@hospital.com")
-        ).first()
-        existing_patient = session.exec(
-            select(User).where(User.email == "patient@hospital.com")
-        ).first()
-
-        if not existing_doctor:
-            doctor = User(
-                email="doCtor@hospital.com",
-                password_hash=hash_password("doCtor123"),
-                role=UserRole.doctor,
-                full_name="Dr. Ahmet Yilmaz",
-            )
-            session.add(doctor)
-            print("✅ Added doctor seed data")
+        # Use INSERT ... ON CONFLICT DO NOTHING for idempotent seed data
+        # This prevents unique constraint violations if data already exists
         
-        if not existing_patient:
-            patient = User(
-                email="patient@hospital.com",
-                password_hash=hash_password("patient123"),
-                role=UserRole.patient,
-                full_name="Mehmet Demir",
-            )
-            session.add(patient)
-            print("✅ Added patient seed data")
+        # Seed doctor
+        doctor_stmt = insert(User.__table__).values(
+            email="doCtor@hospital.com",
+            password_hash=hash_password("doCtor123"),
+            role=UserRole.doctor,
+            full_name="Dr. Ahmet Yilmaz",
+        ).on_conflict_do_nothing(index_elements=['email'])
+        session.exec(doctor_stmt)
         
-        if not existing_doctor or not existing_patient:
-            session.commit()
+        # Seed patient
+        patient_stmt = insert(User.__table__).values(
+            email="patient@hospital.com",
+            password_hash=hash_password("patient123"),
+            role=UserRole.patient,
+            full_name="Mehmet Demir",
+        ).on_conflict_do_nothing(index_elements=['email'])
+        session.exec(patient_stmt)
+        
+        session.commit()
+        print("✅ Seed data processed (inserted or already exists)")
