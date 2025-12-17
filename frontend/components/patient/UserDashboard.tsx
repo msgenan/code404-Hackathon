@@ -5,6 +5,8 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import UserCalendarPlaceholder, { Slot } from "./UserCalendarPlaceholder";
 import { SidebarItemConfig } from "../shared/Sidebar";
 import { AppointmentItem } from "./AppointmentCard";
+import AppointmentsList from "./AppointmentsList";
+import AvailableSlots, { buildAvailableSlotsData } from "./AvailableSlots";
 
 interface SummaryCard {
   label: string;
@@ -83,6 +85,40 @@ const UserDashboard: React.FC = () => {
     []
   );
 
+  const myAppointments: AppointmentItem[] = useMemo(
+    () => [
+      {
+        id: "apt-1",
+        doctor: "Dr. Smith",
+        datetime: "Jan 12, 2025 · 10:30 AM",
+        location: "Room B",
+        status: "upcoming",
+        note: "General checkup",
+        specialty: "General Medicine",
+      },
+      {
+        id: "apt-2",
+        doctor: "Dr. Patel",
+        datetime: "Dec 15, 2024 · 02:00 PM",
+        location: "Room A",
+        status: "completed",
+        specialty: "Cardiology",
+      },
+      {
+        id: "apt-3",
+        doctor: "Dr. Kim",
+        datetime: "Dec 10, 2024 · 11:00 AM",
+        location: "Room C",
+        status: "cancelled",
+        note: "Rescheduled due to conflict",
+        specialty: "Orthopedics",
+      },
+    ],
+    []
+  );
+
+  const availableSlots = useMemo(() => buildAvailableSlotsData(), []);
+
   const doctors = ["Dr. Smith", "Dr. Patel", "Dr. Alvarez"];
   const slots: Slot[] = [
     { time: "09:00", label: "Open", state: "available" },
@@ -140,13 +176,12 @@ const UserDashboard: React.FC = () => {
       )}
 
       {activeMenu === "appointments" && (
-        <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
-          <div className="pb-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-sky-600">My Appointments</p>
-            <h4 className="text-lg font-bold text-slate-900">Upcoming visits</h4>
+        <>
+          <AppointmentsList appointments={myAppointments} />
+          <div className="mt-4">
+            <AvailableSlots slots={availableSlots} />
           </div>
-          <p className="text-sm text-slate-500">No appointments scheduled yet.</p>
-        </section>
+        </>
       )}
 
       {activeMenu === "waiting" && (

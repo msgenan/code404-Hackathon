@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import DoctorCalendarPlaceholder, { Slot } from "./DoctorCalendarPlaceholder";
+import DoctorCalendar, { buildDoctorCalendarData } from "./DoctorCalendar";
 import { SidebarItemConfig } from "../shared/Sidebar";
 
 interface SummaryCard {
@@ -80,6 +81,8 @@ const DoctorDashboard: React.FC = () => {
     []
   );
 
+  const { timeSlots, rows } = useMemo(() => buildDoctorCalendarData(), []);
+
   const rooms = ["Room A", "Room B", "Room C"]; 
   const slots: Slot[] = [
     { time: "09:00", label: "Dr. Smith", state: "busy" },
@@ -111,7 +114,7 @@ const DoctorDashboard: React.FC = () => {
             ))}
           </section>
 
-          <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />
+          <DoctorCalendar timeSlots={timeSlots} rows={rows} />
 
           <section className="grid gap-4 md:grid-cols-2">
             <div className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">
@@ -162,7 +165,7 @@ const DoctorDashboard: React.FC = () => {
         </>
       )}
 
-      {activeMenu === "calendar" && <DoctorCalendarPlaceholder rooms={rooms} slots={slots} />}
+      {activeMenu === "calendar" && <DoctorCalendar timeSlots={timeSlots} rows={rows} />}
 
       {activeMenu === "waiting" && (
         <section className="rounded-3xl bg-white p-4 shadow-xl shadow-sky-50 ring-1 ring-slate-100">

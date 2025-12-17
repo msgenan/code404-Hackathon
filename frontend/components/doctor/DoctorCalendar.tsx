@@ -46,7 +46,14 @@ export const buildDoctorCalendarData = () => {
   const timeSlots = ["09:00", "10:00", "11:00", "12:00", "13:00"];
 
   const makeSlots = (defs: Array<Omit<CalendarSlotData, "time"> & { time: string }>): CalendarSlotData[] =>
-    timeSlots.map((time) => defs.find((d) => d.time === time) ?? { time, label: "Open", status: "available" });
+    timeSlots.map((time) => defs.find((d) => d.time === time) ?? { 
+      time, 
+      label: "Open", 
+      status: "available",
+      capacity: 10,
+      booked: 0,
+      waitingList: 0,
+    });
 
   const rows: CalendarRow[] = [
     {
@@ -54,10 +61,10 @@ export const buildDoctorCalendarData = () => {
       title: "Room A · Dr. Chen",
       subtitle: "General Medicine",
       slots: makeSlots([
-        { time: "09:00", label: "Follow-up", status: "booked", note: "Ms. Lin" },
-        { time: "10:00", label: "Consult", status: "available", note: "30m" },
-        { time: "11:00", label: "Walk-in", status: "waiting", note: "Queue #02" },
-        { time: "12:00", label: "Break", status: "booked", note: "Prep" },
+        { time: "09:00", label: "Follow-up", status: "booked", note: "Ms. Lin", capacity: 10, booked: 10, waitingList: 0 },
+        { time: "10:00", label: "Consult", status: "available", note: "30m", capacity: 10, booked: 3, waitingList: 0 },
+        { time: "11:00", label: "Walk-in", status: "waiting", note: "Queue #02", capacity: 10, booked: 10, waitingList: 2 },
+        { time: "12:00", label: "Break", status: "booked", note: "Prep", capacity: 10, booked: 8, waitingList: 0 },
       ]),
     },
     {
@@ -65,10 +72,10 @@ export const buildDoctorCalendarData = () => {
       title: "Room B · Dr. Patel",
       subtitle: "Cardiology",
       slots: makeSlots([
-        { time: "09:00", label: "Echo review", status: "booked", note: "J. Ozturk" },
-        { time: "10:00", label: "New consult", status: "available", note: "40m" },
-        { time: "11:00", label: "Stress test", status: "booked", note: "Room prep" },
-        { time: "12:00", label: "Waiting", status: "waiting", note: "Queue #05" },
+        { time: "09:00", label: "Echo review", status: "booked", note: "J. Ozturk", capacity: 8, booked: 8, waitingList: 0 },
+        { time: "10:00", label: "New consult", status: "available", note: "40m", capacity: 8, booked: 2, waitingList: 0 },
+        { time: "11:00", label: "Stress test", status: "booked", note: "Room prep", capacity: 8, booked: 7, waitingList: 0 },
+        { time: "12:00", label: "Waiting", status: "waiting", note: "Queue #05", capacity: 8, booked: 8, waitingList: 5 },
       ]),
     },
     {
@@ -76,10 +83,10 @@ export const buildDoctorCalendarData = () => {
       title: "Room C · Dr. Alvarez",
       subtitle: "Dermatology",
       slots: makeSlots([
-        { time: "09:00", label: "Open", status: "available" },
-        { time: "10:00", label: "Procedures", status: "booked", note: "Blocked" },
-        { time: "11:00", label: "Follow-up", status: "available" },
-        { time: "12:00", label: "Waiting", status: "waiting", note: "Queue #08" },
+        { time: "09:00", label: "Open", status: "available", capacity: 12, booked: 1, waitingList: 0 },
+        { time: "10:00", label: "Procedures", status: "booked", note: "Blocked", capacity: 12, booked: 12, waitingList: 0 },
+        { time: "11:00", label: "Follow-up", status: "available", capacity: 12, booked: 5, waitingList: 0 },
+        { time: "12:00", label: "Waiting", status: "waiting", note: "Queue #08", capacity: 12, booked: 12, waitingList: 8 },
       ]),
     },
   ];

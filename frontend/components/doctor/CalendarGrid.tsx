@@ -36,23 +36,33 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({ rows, timeSlots }) => {
         </div>
 
         <div className="mt-3 space-y-3">
-          {rows.map((row) => (
-            <div key={row.id} className={`grid ${columnClass} gap-3 text-sm`}>
-              <div className="flex items-center gap-3 rounded-xl bg-white px-3 py-3 font-semibold text-slate-800 ring-1 ring-slate-100 shadow-sm">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 to-emerald-100 text-slate-800 ring-1 ring-slate-100">
-                  {row.title[0]}
-                </span>
-                <div>
-                  <p className="leading-tight">{row.title}</p>
-                  {row.subtitle && <p className="text-xs text-slate-500">{row.subtitle}</p>}
-                </div>
-              </div>
+          {rows.map((row) => {
+            const doctorName = row.title.split("·")[1]?.trim() || row.title;
+            const roomName = row.title.split("·")[0]?.trim();
 
-              {row.slots.map((slot) => (
-                <CalendarSlot key={`${row.id}-${slot.time}`} slot={slot} />
-              ))}
-            </div>
-          ))}
+            return (
+              <div key={row.id} className={`grid ${columnClass} gap-3 text-sm`}>
+                <div className="flex items-center gap-3 rounded-xl bg-white px-3 py-3 font-semibold text-slate-800 ring-1 ring-slate-100 shadow-sm">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 to-emerald-100 text-slate-800 ring-1 ring-slate-100">
+                    {row.title[0]}
+                  </span>
+                  <div>
+                    <p className="leading-tight">{row.title}</p>
+                    {row.subtitle && <p className="text-xs text-slate-500">{row.subtitle}</p>}
+                  </div>
+                </div>
+
+                {row.slots.map((slot, idx) => (
+                  <CalendarSlot 
+                    key={`${row.id}-${idx}`} 
+                    slot={slot} 
+                    doctorName={doctorName}
+                    roomName={roomName}
+                  />
+                ))}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
